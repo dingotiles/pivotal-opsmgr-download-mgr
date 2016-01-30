@@ -5,16 +5,21 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"sort"
 
 	"github.com/dingodb/pivotal-opsmgr-download-mgr/marketplaces"
+	"github.com/hashicorp/go-version"
 )
 
 // Products describes products and all their uploaded version numbers
-type Products map[string]Product
+type Products map[string]*Product
 
 // Product includes the uploaded product tile versions, and reference to the marketplace/tile name
 type Product struct {
-	Versions            []string
+	Name                string
+	Versions            []*version.Version
+	RawVersions         []string // if version not semver (e.g. 1.2.3.4)
+	LatestVersion       string
 	Marketplace         marketplaces.Marketplace
 	MarketplaceTileName string
 }
@@ -48,9 +53,32 @@ func (opsmgr OpsMgr) GetProducts() (products *Products, err error) {
 	for _, productVersion := range productsResp {
 		name := productVersion.Name
 		product := (*products)[name]
-		product.Versions = append(product.Versions, productVersion.Version)
+		if product == nil {
+			product = &Product{}
+		}
+		product.Name = name
+		version, err := version.NewVersion(productVersion.Version)
+		if err != nil {
+			fmt.Printf("Error parsing product version %s for %s product\n", productVersion.Version, name)
+			product.RawVersions = append(product.RawVersions, productVersion.Version)
+		} else {
+			product.Versions = append(product.Versions, version)
+		}
 		(*products)[name] = product
 	}
+
+	// Sort the product versions so we can determine latest
+	// TODO: sorting non-semver (e.g. p-bosh '1.6.7.0')
+	for _, product := range *products {
+		if len(product.Versions) > 0 {
+			sort.Sort(version.Collection(product.Versions))
+			product.LatestVersion = product.Versions[len(product.Versions)-1].String()
+		} else {
+			product.LatestVersion = product.RawVersions[0]
+		}
+		fmt.Println("Latest version", product.Name, product.LatestVersion)
+	}
+	fmt.Println(*products)
 
 	return
 }

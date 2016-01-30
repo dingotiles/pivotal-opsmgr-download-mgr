@@ -1,7 +1,7 @@
 <h2>Uploaded Products</h2>
 <ul>
-  {{range $name, $versions := .OpsMgrProducts}}
-  <li>{{$name}}</li>
+  {{range $name, $product := .OpsMgrProducts}}
+  <li>{{$name}} {{$product.LatestVersion}}</li>
   {{end}}
 </ul>
 

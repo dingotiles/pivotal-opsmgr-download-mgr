@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"sort"
 
-	"github.com/dingodb/pivotal-opsmgr-download-mgr/marketplaces"
 	"github.com/hashicorp/go-version"
 )
 
@@ -20,7 +19,7 @@ type Product struct {
 	Versions            []*version.Version
 	RawVersions         []string // if version not semver (e.g. 1.2.3.4)
 	LatestVersion       string
-	Marketplace         marketplaces.Marketplace
+	Marketplace         string
 	MarketplaceTileName string
 }
 
@@ -78,7 +77,6 @@ func (opsmgr OpsMgr) GetProducts() (products *Products, err error) {
 		}
 		fmt.Println("Latest version", product.Name, product.LatestVersion)
 	}
-	fmt.Println(*products)
 
 	return
 }

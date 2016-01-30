@@ -1,9 +1,13 @@
 <h2>Uploaded Products</h2>
-<ul>
+<table>
   {{range $name, $product := .OpsMgrProducts}}
-  <li>{{$name}} {{$product.LatestVersion}}</li>
+  <tr>
+    <td>{{$name}}</td>
+    <td>{{$product.LatestVersion}}</td>
+    <td>{{$product.Marketplace}}.{{$product.MarketplaceTileName}}</td>
+  </tr>
   {{end}}
-</ul>
+</table>
 
 <h2>Network Products</h2>
 <ul>

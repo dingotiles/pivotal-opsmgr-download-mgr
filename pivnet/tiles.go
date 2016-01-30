@@ -4,19 +4,17 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-
-	"github.com/dingodb/pivotal-opsmgr-download-mgr/marketplaces"
 )
 
-// GetProductTiles returns available Product Tiles from Pivotal Network
-func (pivnetAPI PivNet) GetProductTiles() (tiles marketplaces.ProductTiles, err error) {
+// UpdateProductTiles fetches available Product Tiles from Pivotal Network
+func (pivnetAPI *PivNet) UpdateProductTiles() (err error) {
 	req, err := http.NewRequest("GET", pivnetAPI.apiURL("/products"), nil)
 	if err != nil {
 		return
 	}
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", fmt.Sprintf("Token %s", pivnetAPI.APIToken))
+	req.Header.Set("Authorization", fmt.Sprintf("Token %s", pivnetAPI.apiToken))
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
@@ -57,7 +55,7 @@ func (pivnetAPI PivNet) GetProductTiles() (tiles marketplaces.ProductTiles, err 
 	}
 
 	for _, product := range productsResp.Products {
-		tiles = append(tiles, product.Slug)
+		pivnetAPI.productTiles = append(pivnetAPI.productTiles, product.Slug)
 	}
 
 	return

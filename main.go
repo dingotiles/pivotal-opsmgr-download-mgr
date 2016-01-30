@@ -24,16 +24,23 @@ func main() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	fmt.Println(products)
 
-	pivnetAPI := pivnet.NewPivNet()
-	fmt.Println("Fetching available product tiles from Pivotal Network...")
-	tiles, err := pivnetAPI.GetProductTiles()
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+	catalogs := marketplaces.NewMarketplaces()
+
+	catalog := pivnet.NewPivNet()
+	catalogs[catalog.Slug()] = catalog
+
+	for _, marketplace := range catalogs {
+		fmt.Printf("Fetching available product tiles from %s...\n", marketplace.Name())
+		err := marketplace.UpdateProductTiles()
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		fmt.Println(marketplace.Name(), marketplace.ProductTiles())
 	}
-	fmt.Println(tiles)
+
+	products.DetermineMarketplaceMappings(catalogs)
 
 	m := martini.Classic()
 	m.Use(render.Renderer())
@@ -42,7 +49,7 @@ func main() {
 		r.HTML(200, "index", struct {
 			OpsMgrProducts *opsmgr.Products
 			PivNetTiles    marketplaces.ProductTiles
-		}{products, tiles})
+		}{products, catalogs["pivnet"].ProductTiles()})
 	})
 	m.Run()
 }

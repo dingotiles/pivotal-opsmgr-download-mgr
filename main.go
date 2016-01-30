@@ -6,13 +6,22 @@ import (
 
 	"github.com/codegangsta/martini-contrib/render"
 	"github.com/dingodb/pivotal-opsmgr-download-mgr/opsmgr"
+	"github.com/dingodb/pivotal-opsmgr-download-mgr/pivnet"
 	"github.com/go-martini/martini"
 )
 
 func main() {
+	pivnetAPI := pivnet.NewPivNet()
+	fmt.Println("Fetching available product tiles from Pivotal Network...")
+	tiles, err := pivnetAPI.GetProductTiles()
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	fmt.Println(tiles)
+
 	opsmgrAPI := opsmgr.NewOpsMgr()
 	fmt.Printf("Fetching uploaded products from OpsMgr %s...\n", opsmgrAPI.URL)
-
 	products, err := opsmgrAPI.GetProducts()
 
 	// Errors:
@@ -29,7 +38,10 @@ func main() {
 	m.Use(render.Renderer())
 
 	m.Get("/", func(r render.Render) {
-		r.HTML(200, "index", products)
+		r.HTML(200, "index", struct {
+			OpsMgrProducts opsmgr.Products
+			PivNetTiles    pivnet.ProductTiles
+		}{products, tiles})
 	})
 	m.Run()
 }

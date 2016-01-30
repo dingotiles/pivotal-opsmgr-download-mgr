@@ -1,5 +1,13 @@
+<h2>Uploaded Products</h2>
 <ul>
-  {{range $name, $versions := .}}
+  {{range $name, $versions := .OpsMgrProducts}}
+  <li>{{$name}}</li>
+  {{end}}
+</ul>
+
+<h2>Network Products</h2>
+<ul>
+  {{range $name := .PivNetTiles}}
   <li>{{$name}}</li>
   {{end}}
 </ul>

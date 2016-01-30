@@ -9,12 +9,17 @@ import (
 
 // ProductsResponse lists the product/version that have been uploaded to OpsMgr
 type ProductsResponse []struct {
-	Name           string `json:"name"`
-	ProductVersion string `json:"product_version"`
+	Name    string `json:"name"`
+	Version string `json:"product_version"`
 }
 
+// Products describes products and all their uploaded version numbers
+type Products map[string]productVersions
+
+type productVersions []string
+
 // GetProducts gets the current product/versions that have been uploaded to OpsMgr
-func (opsmgr OpsMgr) GetProducts() (products *ProductsResponse, err error) {
+func (opsmgr OpsMgr) GetProducts() (products Products, err error) {
 	tr := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: opsmgr.SkipSSLVerification},
 	}
@@ -32,8 +37,19 @@ func (opsmgr OpsMgr) GetProducts() (products *ProductsResponse, err error) {
 	}
 	defer resp.Body.Close()
 
-	products = &ProductsResponse{}
-	err = json.NewDecoder(resp.Body).Decode(products)
+	productsResp := ProductsResponse{}
+	err = json.NewDecoder(resp.Body).Decode(&productsResp)
+
+	products = Products{}
+	for _, productVersion := range productsResp {
+		name := productVersion.Name
+		versions := products[name]
+		if versions == nil {
+			versions = productVersions{}
+		}
+		versions = append(versions, productVersion.Version)
+		products[name] = versions
+	}
 
 	return
 }

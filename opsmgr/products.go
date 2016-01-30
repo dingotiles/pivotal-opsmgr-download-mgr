@@ -5,15 +5,22 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+
+	"github.com/dingodb/pivotal-opsmgr-download-mgr/marketplaces"
 )
 
 // Products describes products and all their uploaded version numbers
-type Products map[string]productVersions
+type Products map[string]Product
 
-type productVersions []string
+// Product includes the uploaded product tile versions, and reference to the marketplace/tile name
+type Product struct {
+	Versions            []string
+	Marketplace         marketplaces.Marketplace
+	MarketplaceTileName string
+}
 
 // GetProducts gets the current product/versions that have been uploaded to OpsMgr
-func (opsmgr OpsMgr) GetProducts() (products Products, err error) {
+func (opsmgr OpsMgr) GetProducts() (products *Products, err error) {
 	tr := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: opsmgr.SkipSSLVerification},
 	}
@@ -37,15 +44,12 @@ func (opsmgr OpsMgr) GetProducts() (products Products, err error) {
 	}{}
 	err = json.NewDecoder(resp.Body).Decode(&productsResp)
 
-	products = Products{}
+	products = &Products{}
 	for _, productVersion := range productsResp {
 		name := productVersion.Name
-		versions := products[name]
-		if versions == nil {
-			versions = productVersions{}
-		}
-		versions = append(versions, productVersion.Version)
-		products[name] = versions
+		product := (*products)[name]
+		product.Versions = append(product.Versions, productVersion.Version)
+		(*products)[name] = product
 	}
 
 	return

@@ -12,15 +12,6 @@ import (
 )
 
 func main() {
-	pivnetAPI := pivnet.NewPivNet()
-	fmt.Println("Fetching available product tiles from Pivotal Network...")
-	tiles, err := pivnetAPI.GetProductTiles()
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-	fmt.Println(tiles)
-
 	opsmgrAPI := opsmgr.NewOpsMgr()
 	fmt.Printf("Fetching uploaded products from OpsMgr %s...\n", opsmgrAPI.URL)
 	products, err := opsmgrAPI.GetProducts()
@@ -35,12 +26,21 @@ func main() {
 	}
 	fmt.Println(products)
 
+	pivnetAPI := pivnet.NewPivNet()
+	fmt.Println("Fetching available product tiles from Pivotal Network...")
+	tiles, err := pivnetAPI.GetProductTiles()
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	fmt.Println(tiles)
+
 	m := martini.Classic()
 	m.Use(render.Renderer())
 
 	m.Get("/", func(r render.Render) {
 		r.HTML(200, "index", struct {
-			OpsMgrProducts opsmgr.Products
+			OpsMgrProducts *opsmgr.Products
 			PivNetTiles    marketplaces.ProductTiles
 		}{products, tiles})
 	})

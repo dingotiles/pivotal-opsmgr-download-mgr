@@ -4,13 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+
+	"github.com/dingodb/pivotal-opsmgr-download-mgr/marketplaces"
 )
 
-// ProductTiles is a list of product tiles
-type ProductTiles []string
-
 // GetProductTiles returns available Product Tiles from Pivotal Network
-func (pivnetAPI PivNet) GetProductTiles() (tiles ProductTiles, err error) {
+func (pivnetAPI PivNet) GetProductTiles() (tiles marketplaces.ProductTiles, err error) {
 	req, err := http.NewRequest("GET", pivnetAPI.apiURL("/products"), nil)
 	if err != nil {
 		return

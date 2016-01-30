@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/codegangsta/martini-contrib/render"
+	"github.com/dingodb/pivotal-opsmgr-download-mgr/marketplaces"
 	"github.com/dingodb/pivotal-opsmgr-download-mgr/opsmgr"
 	"github.com/dingodb/pivotal-opsmgr-download-mgr/pivnet"
 	"github.com/go-martini/martini"
@@ -40,7 +41,7 @@ func main() {
 	m.Get("/", func(r render.Render) {
 		r.HTML(200, "index", struct {
 			OpsMgrProducts opsmgr.Products
-			PivNetTiles    pivnet.ProductTiles
+			PivNetTiles    marketplaces.ProductTiles
 		}{products, tiles})
 	})
 	m.Run()

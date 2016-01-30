@@ -7,12 +7,6 @@ import (
 	"net/http"
 )
 
-// ProductsResponse lists the product/version that have been uploaded to OpsMgr
-type ProductsResponse []struct {
-	Name    string `json:"name"`
-	Version string `json:"product_version"`
-}
-
 // Products describes products and all their uploaded version numbers
 type Products map[string]productVersions
 
@@ -37,7 +31,10 @@ func (opsmgr OpsMgr) GetProducts() (products Products, err error) {
 	}
 	defer resp.Body.Close()
 
-	productsResp := ProductsResponse{}
+	productsResp := []struct {
+		Name    string `json:"name"`
+		Version string `json:"product_version"`
+	}{}
 	err = json.NewDecoder(resp.Body).Decode(&productsResp)
 
 	products = Products{}

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/codegangsta/martini-contrib/render"
 	"github.com/dingodb/pivotal-opsmgr-download-mgr/opsmgr"
 	"github.com/go-martini/martini"
 )
@@ -23,9 +24,12 @@ func main() {
 		os.Exit(1)
 	}
 	fmt.Println(products)
+
 	m := martini.Classic()
-	m.Get("/", func() string {
-		return "Hello world!"
+	m.Use(render.Renderer())
+
+	m.Get("/", func(r render.Render) {
+		r.HTML(200, "index", products)
 	})
 	m.Run()
 }

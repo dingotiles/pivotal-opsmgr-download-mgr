@@ -1,0 +1,33 @@
+{
+	"ImportPath": "github.com/dingodb/pivotal-opsmgr-download-mgr",
+	"GoVersion": "go1.5",
+	"Packages": [
+		"./..."
+	],
+	"Deps": [
+		{
+			"ImportPath": "github.com/codegangsta/inject",
+			"Comment": "v1.0-rc1-10-g33e0aa1",
+			"Rev": "33e0aa1cb7c019ccc3fbe049a8262a6403d30504"
+		},
+		{
+			"ImportPath": "github.com/codegangsta/martini",
+			"Comment": "v1.0-171-gc8e367e",
+			"Rev": "c8e367e964da242333b34f0cc2b01b91e16fa52a"
+		},
+		{
+			"ImportPath": "github.com/codegangsta/martini-contrib/render",
+			"Comment": "v0.1-159-g8ce6181",
+			"Rev": "8ce6181c2609699e4c7cd30994b76a850a9cdadc"
+		},
+		{
+			"ImportPath": "github.com/go-martini/martini",
+			"Comment": "v1.0-171-gc8e367e",
+			"Rev": "c8e367e964da242333b34f0cc2b01b91e16fa52a"
+		},
+		{
+			"ImportPath": "github.com/hashicorp/go-version",
+			"Rev": "7e3c02b30806fa5779d3bdfc152ce4c6f40e7b38"
+		}
+	]
+}

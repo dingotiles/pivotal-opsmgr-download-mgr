@@ -23,6 +23,7 @@ func (pivnetAPI *PivNet) LookupProductTile(opsMgrProductName string) (tile *mark
 func (pivnetAPI *PivNet) updateProductTileInfo(tile *marketplaces.ProductTile) (err error) {
 	req, err := http.NewRequest("GET", pivnetAPI.apiURL(fmt.Sprintf("/products/%s/releases", tile.Slug)), nil)
 	if err != nil {
+		fmt.Println(err.Error())
 		return
 	}
 	req.Header.Set("Accept", "application/json")
@@ -31,6 +32,7 @@ func (pivnetAPI *PivNet) updateProductTileInfo(tile *marketplaces.ProductTile) (
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
+		fmt.Println(err.Error())
 		return
 	}
 	defer resp.Body.Close()
@@ -84,6 +86,7 @@ func (pivnetAPI *PivNet) updateProductTileInfo(tile *marketplaces.ProductTile) (
 	}{}
 	err = json.NewDecoder(resp.Body).Decode(&releasesResp)
 	if err != nil {
+		fmt.Println(err.Error())
 		return
 	}
 
@@ -107,6 +110,7 @@ func (pivnetAPI *PivNet) updateProductTileInfo(tile *marketplaces.ProductTile) (
 	// 2. look at product_files for one with aws_object_key ~= /<name>-<version>.pivotal/
 	req, err = http.NewRequest("GET", pivnetAPI.apiURL(fmt.Sprintf("/products/%s/releases/%d/product_files", tile.Slug, latestReleaseDatedReleaseID)), nil)
 	if err != nil {
+		fmt.Println(err.Error())
 		return
 	}
 	req.Header.Set("Accept", "application/json")
@@ -115,6 +119,7 @@ func (pivnetAPI *PivNet) updateProductTileInfo(tile *marketplaces.ProductTile) (
 
 	resp, err = http.DefaultClient.Do(req)
 	if err != nil {
+		fmt.Println(err.Error())
 		return
 	}
 	defer resp.Body.Close()
@@ -146,22 +151,82 @@ func (pivnetAPI *PivNet) updateProductTileInfo(tile *marketplaces.ProductTile) (
 
 	err = json.NewDecoder(resp.Body).Decode(&productFilesResp)
 	if err != nil {
+		fmt.Println(err.Error())
 		return
 	}
 
 	r, _ := regexp.Compile("([a-zA-Z_-]+)-(v?[0-9][a-zA-Z0-9._-]*)\\.pivotal")
+
+	productFileID := 0
 
 	// 3. if so, then it is a Tile; and deduce its product TileName & TileVersion
 	for _, productFile := range productFilesResp.ProductFiles {
 		fmt.Println("Checking if product file", productFile.AwsObjectKey, "is a .pivotal file...")
 		tileTokens := r.FindStringSubmatch(productFile.AwsObjectKey)
 		if len(tileTokens) == 3 {
+			productFileID = productFile.ID
 			tile.Tile = true
 			tile.TileName = tileTokens[1]
 			tile.TileVersion = tileTokens[2]
-			fmt.Printf("Found tile %s %s for product %s\n", tile.TileName, tile.TileVersion, tile.Slug)
+			fmt.Printf("Found tile ID %d, named %s %s for product %s\n", productFileID, tile.TileName, tile.TileVersion, tile.Slug)
+			break
+		}
+	}
+	// Get product size
+	if productFileID > 0 {
+		fmt.Println("Looking up file size for product file", productFileID)
+		tile.TileProductFileURL = pivnetAPI.apiURL(fmt.Sprintf("/products/%s/releases/%d/product_files/%d", tile.Slug, latestReleaseDatedReleaseID, productFileID))
+		req, err = http.NewRequest("GET", tile.TileProductFileURL, nil)
+		if err != nil {
+			fmt.Println(err.Error())
 			return
 		}
+		req.Header.Set("Accept", "application/json")
+		req.Header.Set("Content-Type", "application/json")
+		req.Header.Set("Authorization", fmt.Sprintf("Token %s", pivnetAPI.apiToken))
+
+		resp, err = http.DefaultClient.Do(req)
+		if err != nil {
+			fmt.Println(err.Error())
+			return
+		}
+		defer resp.Body.Close()
+
+		productFileResp := struct {
+			ProductFile struct {
+				ID                 int           `json:"id"`
+				AwsObjectKey       string        `json:"aws_object_key"`
+				Description        string        `json:"description"`
+				DocsURL            string        `json:"docs_url"`
+				FileType           string        `json:"file_type"`
+				FileVersion        string        `json:"file_version"`
+				IncludedFiles      []interface{} `json:"included_files"`
+				Md5                string        `json:"md5"`
+				Name               string        `json:"name"`
+				Platforms          []interface{} `json:"platforms"`
+				ReleasedAt         string        `json:"released_at"`
+				Size               int64         `json:"size"`
+				SystemRequirements []interface{} `json:"system_requirements"`
+				Links              struct {
+					Self struct {
+						Href string `json:"href"`
+					} `json:"self"`
+					Download struct {
+						Href string `json:"href"`
+					} `json:"download"`
+					SignatureFileDownload struct {
+						Href interface{} `json:"href"`
+					} `json:"signature_file_download"`
+				} `json:"_links"`
+			} `json:"product_file"`
+		}{}
+
+		err = json.NewDecoder(resp.Body).Decode(&productFileResp)
+		if err != nil {
+			fmt.Println(err.Error())
+			return
+		}
+		tile.TileSize = productFileResp.ProductFile.Size
 	}
 	return
 }

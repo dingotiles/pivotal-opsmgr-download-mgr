@@ -23,7 +23,7 @@
   {{range $tile := .PivNetTiles}}
   {{if $tile.Tile}}
   <li>
-    {{$tile.Slug}} - {{$tile.TileName}} - ({{$tile.TileVersion}})
+    {{$tile.Slug}} - {{$tile.TileName}} - {{$tile.TileVersion}} {{$tile.TileSize}} {{$tile.TileDownloadURL}}
   </li>
   {{end}}
   {{end}}

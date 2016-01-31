@@ -17,7 +17,9 @@ func (product *Product) DetermineMarketplaceTile(catalogs marketplaces.Marketpla
 		tile := marketplace.LookupProductTile(product.Name)
 		if tile != nil {
 			product.Marketplace = marketplace.Slug()
-			product.MarketplaceTileName = tile.Slug
+			product.MarketplaceProductName = tile.Slug
+			product.MarketplaceTileName = tile.TileName
+			product.MarketplaceTileVersion = tile.TileVersion
 		}
 	}
 }

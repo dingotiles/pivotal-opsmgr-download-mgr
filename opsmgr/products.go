@@ -15,12 +15,14 @@ type Products map[string]*Product
 
 // Product includes the uploaded product tile versions, and reference to the marketplace/tile name
 type Product struct {
-	Name                string
-	Versions            []*version.Version
-	RawVersions         []string // if version not semver (e.g. 1.2.3.4)
-	LatestVersion       string
-	Marketplace         string
-	MarketplaceTileName string
+	Name                   string
+	Versions               []*version.Version
+	RawVersions            []string // if version not semver (e.g. 1.2.3.4)
+	LatestVersion          string
+	Marketplace            string
+	MarketplaceProductName string
+	MarketplaceTileName    string
+	MarketplaceTileVersion string
 }
 
 // GetProducts gets the current product/versions that have been uploaded to OpsMgr

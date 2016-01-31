@@ -13,9 +13,10 @@ type ProductTiles []*ProductTile
 
 // ProductTile represents a catalog listing for a tile (or items that aren't .pivotal tiles)
 type ProductTile struct {
-	Slug     string
-	Tile     bool
-	TileName string
+	Slug        string
+	Tile        bool
+	TileName    string
+	TileVersion string
 }
 
 // Marketplace is an interface to PivNet or StarkAndWayneMarketplace

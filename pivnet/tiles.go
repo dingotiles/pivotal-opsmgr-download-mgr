@@ -57,9 +57,9 @@ func (pivnetAPI *PivNet) UpdateProductTiles() (err error) {
 	}
 
 	for _, product := range productsResp.Products {
-		tile := &marketplaces.ProductTile{
-			Slug: product.Slug,
-		}
+		tile := &marketplaces.ProductTile{Slug: product.Slug}
+		pivnetAPI.updateProductTileInfo(tile)
+
 		pivnetAPI.productTiles = append(pivnetAPI.productTiles, tile)
 	}
 

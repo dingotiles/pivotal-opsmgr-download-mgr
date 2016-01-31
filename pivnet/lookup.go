@@ -1,6 +1,14 @@
 package pivnet
 
-import "github.com/dingodb/pivotal-opsmgr-download-mgr/marketplaces"
+import (
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"regexp"
+	"strings"
+
+	"github.com/dingodb/pivotal-opsmgr-download-mgr/marketplaces"
+)
 
 // LookupProductTile tries to match an Opsmgr Product name with a PivNet product/release/.pivotal tile
 func (pivnetAPI *PivNet) LookupProductTile(opsMgrProductName string) (tile *marketplaces.ProductTile) {
@@ -10,4 +18,150 @@ func (pivnetAPI *PivNet) LookupProductTile(opsMgrProductName string) (tile *mark
 		}
 	}
 	return nil
+}
+
+func (pivnetAPI *PivNet) updateProductTileInfo(tile *marketplaces.ProductTile) (err error) {
+	req, err := http.NewRequest("GET", pivnetAPI.apiURL(fmt.Sprintf("/products/%s/releases", tile.Slug)), nil)
+	if err != nil {
+		return
+	}
+	req.Header.Set("Accept", "application/json")
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", fmt.Sprintf("Token %s", pivnetAPI.apiToken))
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return
+	}
+	defer resp.Body.Close()
+
+	releasesResp := struct {
+		Releases []struct {
+			ID              int    `json:"id"`
+			Version         string `json:"version"`
+			ReleaseType     string `json:"release_type"`
+			ReleaseDate     string `json:"release_date"`
+			ReleaseNotesURL string `json:"release_notes_url"`
+			Availability    string `json:"availability"`
+			Description     string `json:"description"`
+			Eula            struct {
+				ID    int    `json:"id"`
+				Slug  string `json:"slug"`
+				Name  string `json:"name"`
+				Links struct {
+					Self struct {
+						Href string `json:"href"`
+					} `json:"self"`
+				} `json:"_links"`
+			} `json:"eula"`
+			EndOfSupportDate string `json:"end_of_support_date"`
+			Eccn             string `json:"eccn"`
+			LicenseException string `json:"license_exception"`
+			Controlled       bool   `json:"controlled"`
+			Links            struct {
+				Self struct {
+					Href string `json:"href"`
+				} `json:"self"`
+				EulaAcceptance struct {
+					Href string `json:"href"`
+				} `json:"eula_acceptance"`
+				ProductFiles struct {
+					Href string `json:"href"`
+				} `json:"product_files"`
+				FileGroups struct {
+					Href string `json:"href"`
+				} `json:"file_groups"`
+				UserGroups struct {
+					Href string `json:"href"`
+				} `json:"user_groups"`
+			} `json:"_links"`
+		} `json:"releases"`
+		Links struct {
+			Self struct {
+				Href string `json:"href"`
+			} `json:"self"`
+		} `json:"_links"`
+	}{}
+	err = json.NewDecoder(resp.Body).Decode(&releasesResp)
+	if err != nil {
+		return
+	}
+
+	// 1. find latest release
+	latestReleaseDatedReleaseID := 0
+	latestReleaseDate := "0000-00-00"
+	latestReleaseVersion := ""
+	for _, release := range releasesResp.Releases {
+		if strings.Compare(latestReleaseDate, release.ReleaseDate) < 0 {
+			latestReleaseDate = release.ReleaseDate
+			latestReleaseDatedReleaseID = release.ID
+			latestReleaseVersion = release.Version
+		}
+	}
+	fmt.Printf("Latest release for %s is '%s' date %s with ID %d\n", tile.Slug, latestReleaseVersion, latestReleaseDate, latestReleaseDatedReleaseID)
+	// Skip if product has no releases and hence no product_files which might be .pivotal tiles
+	if latestReleaseDate == "0000-00-00" {
+		return
+	}
+
+	// 2. look at product_files for one with aws_object_key ~= /<name>-<version>.pivotal/
+	req, err = http.NewRequest("GET", pivnetAPI.apiURL(fmt.Sprintf("/products/%s/releases/%d/product_files", tile.Slug, latestReleaseDatedReleaseID)), nil)
+	if err != nil {
+		return
+	}
+	req.Header.Set("Accept", "application/json")
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", fmt.Sprintf("Token %s", pivnetAPI.apiToken))
+
+	resp, err = http.DefaultClient.Do(req)
+	if err != nil {
+		return
+	}
+	defer resp.Body.Close()
+
+	productFilesResp := struct {
+		ProductFiles []struct {
+			ID           int    `json:"id"`
+			AwsObjectKey string `json:"aws_object_key"`
+			FileVersion  string `json:"file_version"`
+			Name         string `json:"name"`
+			Links        struct {
+				Self struct {
+					Href string `json:"href"`
+				} `json:"self"`
+				Download struct {
+					Href string `json:"href"`
+				} `json:"download"`
+				SignatureFileDownload struct {
+					Href interface{} `json:"href"`
+				} `json:"signature_file_download"`
+			} `json:"_links"`
+		} `json:"product_files"`
+		Links struct {
+			Self struct {
+				Href string `json:"href"`
+			} `json:"self"`
+		} `json:"_links"`
+	}{}
+
+	err = json.NewDecoder(resp.Body).Decode(&productFilesResp)
+	if err != nil {
+		return
+	}
+
+	r, _ := regexp.Compile("([a-zA-Z_-]+)-(v?[0-9][a-zA-Z0-9._-]*)\\.pivotal")
+
+	// 3. if so, then it is a Tile; and deduce its product TileName & TileVersion
+	for _, productFile := range productFilesResp.ProductFiles {
+		fmt.Println("Checking if product file", productFile.AwsObjectKey, "is a .pivotal file...")
+		tileTokens := r.FindStringSubmatch(productFile.AwsObjectKey)
+		if len(tileTokens) == 3 {
+			tile.Tile = true
+			tile.TileName = tileTokens[1]
+			tile.TileVersion = tileTokens[2]
+			fmt.Printf("Found tile %s %s for product %s\n", tile.TileName, tile.TileVersion, tile.Slug)
+			return
+		}
+	}
+	return
 }

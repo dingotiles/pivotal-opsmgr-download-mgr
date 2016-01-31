@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+
+	"github.com/dingodb/pivotal-opsmgr-download-mgr/marketplaces"
 )
 
 // UpdateProductTiles fetches available Product Tiles from Pivotal Network
@@ -55,7 +57,10 @@ func (pivnetAPI *PivNet) UpdateProductTiles() (err error) {
 	}
 
 	for _, product := range productsResp.Products {
-		pivnetAPI.productTiles = append(pivnetAPI.productTiles, product.Slug)
+		tile := &marketplaces.ProductTile{
+			Slug: product.Slug,
+		}
+		pivnetAPI.productTiles = append(pivnetAPI.productTiles, tile)
 	}
 
 	return

@@ -9,11 +9,13 @@ func NewMarketplaces() Marketplaces {
 }
 
 // ProductTiles is a list of product tiles
-type ProductTiles []string
+type ProductTiles []*ProductTile
 
-// ProductTile represents a catalog listing for a tile
+// ProductTile represents a catalog listing for a tile (or items that aren't .pivotal tiles)
 type ProductTile struct {
-	Slug string
+	Slug     string
+	Tile     bool
+	TileName string
 }
 
 // Marketplace is an interface to PivNet or StarkAndWayneMarketplace

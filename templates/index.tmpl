@@ -11,7 +11,12 @@
 
 <h2>Network Products</h2>
 <ul>
-  {{range $name := .PivNetTiles}}
-  <li>{{$name}}</li>
+  {{range $tile := .PivNetTiles}}
+  <li>
+    {{$tile.Slug}}
+    {{if $tile.Tile}}
+    ({{$tile.TileName}})
+    {{end}}
+  </li>
   {{end}}
 </ul>

@@ -107,6 +107,8 @@ func (pivnetAPI *PivNet) updateProductTileInfo(tile *marketplaces.ProductTile) (
 		return
 	}
 
+	tile.EULAAcceptanceURL = pivnetAPI.apiURL(fmt.Sprintf("/products/%s/releases/%d/eula_acceptance", tile.Slug, latestReleaseDatedReleaseID))
+
 	// 2. look at product_files for one with aws_object_key ~= /<name>-<version>.pivotal/
 	req, err = http.NewRequest("GET", pivnetAPI.apiURL(fmt.Sprintf("/products/%s/releases/%d/product_files", tile.Slug, latestReleaseDatedReleaseID)), nil)
 	if err != nil {
@@ -175,8 +177,8 @@ func (pivnetAPI *PivNet) updateProductTileInfo(tile *marketplaces.ProductTile) (
 	// Get product size
 	if productFileID > 0 {
 		fmt.Println("Looking up file size for product file", productFileID)
-		tile.TileProductFileURL = pivnetAPI.apiURL(fmt.Sprintf("/products/%s/releases/%d/product_files/%d", tile.Slug, latestReleaseDatedReleaseID, productFileID))
-		req, err = http.NewRequest("GET", tile.TileProductFileURL, nil)
+		tile.ProductFileURL = pivnetAPI.apiURL(fmt.Sprintf("/products/%s/releases/%d/product_files/%d", tile.Slug, latestReleaseDatedReleaseID, productFileID))
+		req, err = http.NewRequest("GET", tile.ProductFileURL, nil)
 		if err != nil {
 			fmt.Println(err.Error())
 			return

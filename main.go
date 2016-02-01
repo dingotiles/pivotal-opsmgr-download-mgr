@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bufio"
+	"bytes"
 	"fmt"
 	"os"
 
@@ -79,6 +81,10 @@ func main() {
 		}
 
 		fmt.Println(tile)
+		buffer := &bytes.Buffer{}
+		body := bufio.NewWriter(buffer)
+		catalog.DownloadProductTileFile(tile, body)
+		fmt.Printf("Downloaded %v, size %d\n", tile, buffer.Len())
 
 		r.Redirect("/")
 	})

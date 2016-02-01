@@ -1,5 +1,7 @@
 package marketplaces
 
+import "io"
+
 // Marketplaces references all configured Marketplace APIs, such as PivNet, indexed by Slug
 type Marketplaces map[string]Marketplace
 
@@ -31,4 +33,5 @@ type Marketplace interface {
 	UpdateProductTiles() error
 	ProductTiles() ProductTiles
 	LookupProductTile(productName string) *ProductTile
+	DownloadProductTileFile(tile *ProductTile, out io.Writer) error
 }

@@ -19,11 +19,12 @@
 </table>
 
 <h2>Pivotal Network Tiles</h2>
+{{if .LoadingCatalogs}}<span>Catalog loading in progress...</span>{{end}}
 <ul>
   {{range $tile := .PivNetTiles}}
   {{if $tile.Tile}}
   <li>
-    {{$tile.Slug}} - {{$tile.TileName}} - {{$tile.TileVersion}} {{$tile.TileSize}}
+    {{$tile.Slug}} - {{$tile.TileName}} - {{$tile.TileVersion}} {{$tile.TileHumanSize}}
   </li>
   {{end}}
   {{end}}

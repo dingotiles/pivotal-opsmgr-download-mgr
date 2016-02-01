@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/dingodb/pivotal-opsmgr-download-mgr/marketplaces"
+	"github.com/dustin/go-humanize"
 )
 
 // LookupProductTile tries to match an Opsmgr Product name with a PivNet product/release/.pivotal tile
@@ -207,7 +208,7 @@ func (pivnetAPI *PivNet) updateProductTileInfo(tile *marketplaces.ProductTile) (
 				Name               string        `json:"name"`
 				Platforms          []interface{} `json:"platforms"`
 				ReleasedAt         string        `json:"released_at"`
-				Size               int64         `json:"size"`
+				Size               uint64        `json:"size"`
 				SystemRequirements []interface{} `json:"system_requirements"`
 				Links              struct {
 					Self struct {
@@ -229,6 +230,7 @@ func (pivnetAPI *PivNet) updateProductTileInfo(tile *marketplaces.ProductTile) (
 			return
 		}
 		tile.TileSize = productFileResp.ProductFile.Size
+		tile.TileHumanSize = humanize.Bytes(productFileResp.ProductFile.Size)
 	}
 	return
 }

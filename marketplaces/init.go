@@ -17,7 +17,8 @@ type ProductTile struct {
 	Tile              bool
 	TileName          string
 	TileVersion       string
-	TileSize          int64
+	TileSize          uint64
+	TileHumanSize     string
 	EULAAcceptanceURL string
 	ProductFileURL    string
 }

@@ -9,7 +9,7 @@ import (
 	"github.com/codegangsta/martini-contrib/render"
 	"github.com/dingodb/pivotal-opsmgr-download-mgr/marketplaces"
 	"github.com/dingodb/pivotal-opsmgr-download-mgr/opsmgr"
-	"github.com/dingodb/pivotal-opsmgr-download-mgr/pivnet"
+	"github.com/dingodb/pivotal-opsmgr-download-mgr/starkandwayne"
 	"github.com/go-martini/martini"
 )
 
@@ -33,8 +33,10 @@ func main() {
 			os.Exit(1)
 		}
 
-		catalog := pivnet.NewPivNet()
-		catalogs[catalog.Slug()] = catalog
+		starkCatalog := starkandwayne.NewStarkAndWayne()
+		catalogs[starkCatalog.Slug()] = starkCatalog
+		// catalog := pivnet.NewPivNet()
+		// catalogs[catalog.Slug()] = catalog
 
 		for _, catalog := range catalogs {
 			fmt.Printf("Fetching available product tiles from %s...\n", catalog.Name())
@@ -58,10 +60,11 @@ func main() {
 			r.HTML(200, "loading", nil)
 		} else {
 			r.HTML(200, "index", struct {
-				OpsMgrProducts  *opsmgr.Products
-				PivNetTiles     marketplaces.ProductTiles
-				LoadingCatalogs bool
-			}{products, catalogs["pivnet"].ProductTiles(), loadingCatalogs})
+				OpsMgrProducts     *opsmgr.Products
+				PivNetTiles        marketplaces.ProductTiles
+				StarkAndWayneTiles marketplaces.ProductTiles
+				LoadingCatalogs    bool
+			}{products, catalogs["pivnet"].ProductTiles(), catalogs["starkandwayne"].ProductTiles(), loadingCatalogs})
 		}
 	})
 	m.Get("/install/:marketplace/:tilename", func(params martini.Params, r render.Render) {

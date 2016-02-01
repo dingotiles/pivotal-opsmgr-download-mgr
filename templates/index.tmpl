@@ -45,3 +45,27 @@
   {{end}}
   {{end}}
 </table>
+
+<h2>Stark & Wayne Tiles</h2>
+{{$loading := .LoadingCatalogs}}
+{{if $loading}}<span>Catalog loading in progress...</span>{{end}}
+<table>
+  <tr>
+    <th>Product</th>
+    <th>Tile</th>
+    <th>Version</th>
+    <th>Size</th>
+    <th>&nbsp;</th>
+  </tr>
+  {{range $tile := .StarkAndWayneTiles}}
+  {{if $tile.Tile}}
+  <tr>
+    <td>{{$tile.Slug}}</td>
+    <td>{{$tile.TileName}}</td>
+    <td>{{$tile.TileVersion}}</td>
+    <td>{{$tile.TileHumanSize}}</td>
+    <td><a href="/install/{{$tile.MarketplaceSlug}}/{{$tile.TileName}}">Install</a></td>
+  </tr>
+  {{end}}
+  {{end}}
+</table>

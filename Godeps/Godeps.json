@@ -21,6 +21,10 @@
 			"Rev": "8ce6181c2609699e4c7cd30994b76a850a9cdadc"
 		},
 		{
+			"ImportPath": "github.com/dustin/go-humanize",
+			"Rev": "8929fe90cee4b2cb9deb468b51fb34eba64d1bf0"
+		},
+		{
 			"ImportPath": "github.com/go-martini/martini",
 			"Comment": "v1.0-171-gc8e367e",
 			"Rev": "c8e367e964da242333b34f0cc2b01b91e16fa52a"

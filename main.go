@@ -62,5 +62,25 @@ func main() {
 			}{products, catalogs["pivnet"].ProductTiles(), loadingCatalogs})
 		}
 	})
+	m.Get("/install/:marketplace/:tilename", func(params martini.Params, r render.Render) {
+		marketplaceSlug := params["marketplace"]
+		r.Redirect("/")
+
+		catalog := catalogs[marketplaceSlug]
+		if catalog == nil {
+			fmt.Println("Unknown :marketplace slug", marketplaceSlug)
+			return
+		}
+		tileSlug := params["tilename"]
+		tile := catalog.LookupProductTile(tileSlug)
+		if tile == nil {
+			fmt.Printf("Unknown %s product %s\n", marketplaceSlug, tileSlug)
+			return
+		}
+
+		fmt.Println(tile)
+
+		r.Redirect("/")
+	})
 	m.Run()
 }

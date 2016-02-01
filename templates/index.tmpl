@@ -16,14 +16,15 @@
     <td>{{$product.MarketplaceProductName}}</td>
     <td>{{$product.MarketplaceTileVersion}}</td>
     <td>
-      {{if $product.MarketplaceProductName}}<a href="/install/{{$product.Marketplace}}/{{$product.MarketplaceProductName}}">Install</a>{{else}}&nbsp;{{end}}
+      {{if $product.MarketplaceProductName}}<a href="/install/{{$product.Marketplace}}/{{$name}}">Install</a>{{else}}&nbsp;{{end}}
     </td>
   </tr>
   {{end}}
 </table>
 
 <h2>Pivotal Network Tiles</h2>
-{{if .LoadingCatalogs}}<span>Catalog loading in progress...</span>{{end}}
+{{$loading := .LoadingCatalogs}}
+{{if $loading}}<span>Catalog loading in progress...</span>{{end}}
 <table>
   <tr>
     <th>Product</th>
@@ -39,7 +40,7 @@
     <td>{{$tile.TileName}}</td>
     <td>{{$tile.TileVersion}}</td>
     <td>{{$tile.TileHumanSize}}</td>
-    <td><a href="/install/{{$tile.MarketplaceSlug}}/{{$tile.Slug}}">Install</a></td>
+    <td>{{if $loading}}&nbsp;{{else}}<a href="/install/{{$tile.MarketplaceSlug}}/{{$tile.TileName}}">Install</a>{{end}}</td>
   </tr>
   {{end}}
   {{end}}

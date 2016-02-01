@@ -6,6 +6,7 @@
     <th>Marketplace</th>
     <th>Catalog Name</th>
     <th>Available Version</th>
+    <th>&nbsp;</th>
   </tr>
   {{range $name, $product := .OpsMgrProducts}}
   <tr>
@@ -14,6 +15,9 @@
     <td>{{$product.Marketplace}}</td>
     <td>{{$product.MarketplaceProductName}}</td>
     <td>{{$product.MarketplaceTileVersion}}</td>
+    <td>
+      {{if $product.MarketplaceProductName}}<a href="/install/{{$product.Marketplace}}/{{$product.MarketplaceProductName}}">Install</a>{{else}}&nbsp;{{end}}
+    </td>
   </tr>
   {{end}}
 </table>
@@ -26,6 +30,7 @@
     <th>Tile</th>
     <th>Version</th>
     <th>Size</th>
+    <th>&nbsp;</th>
   </tr>
   {{range $tile := .PivNetTiles}}
   {{if $tile.Tile}}
@@ -34,6 +39,7 @@
     <td>{{$tile.TileName}}</td>
     <td>{{$tile.TileVersion}}</td>
     <td>{{$tile.TileHumanSize}}</td>
+    <td><a href="/install/{{$tile.MarketplaceSlug}}/{{$tile.Slug}}">Install</a></td>
   </tr>
   {{end}}
   {{end}}

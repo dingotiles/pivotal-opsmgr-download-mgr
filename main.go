@@ -34,14 +34,14 @@ func main() {
 		catalog := pivnet.NewPivNet()
 		catalogs[catalog.Slug()] = catalog
 
-		for _, marketplace := range catalogs {
-			fmt.Printf("Fetching available product tiles from %s...\n", marketplace.Name())
-			err := marketplace.UpdateProductTiles()
+		for _, catalog := range catalogs {
+			fmt.Printf("Fetching available product tiles from %s...\n", catalog.Name())
+			err := catalog.UpdateProductTiles()
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			fmt.Println(marketplace.Name(), marketplace.ProductTiles())
+			fmt.Println(catalog.Name(), catalog.ProductTiles())
 		}
 
 		products.DetermineMarketplaceMappings(catalogs)

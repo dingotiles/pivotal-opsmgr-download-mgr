@@ -25,8 +25,8 @@ func (opsmgr OpsMgr) UploadProductFile(tile *marketplaces.ProductTile, downloadR
 	go func() {
 		fmt.Printf("create a multipart filter to 'pass through' the data...\n")
 		h := make(textproto.MIMEHeader)
-		h.Set("Content-Disposition", `form-data; name="product[file]"`)
-		h.Set("Content-Type", "application/zip")
+		h.Set("Content-Disposition", `form-data; name="product[file]"; filename="tile.pivotal"`)
+		h.Set("Content-Type", "application/octet-stream")
 
 		// h.Set("Content-Length", fmt.Sprintf("%d", tile.TileSize))
 		part, err := writer.CreatePart(h)

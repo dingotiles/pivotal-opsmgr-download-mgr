@@ -18,6 +18,7 @@ type ProductTile struct {
 	Slug              string
 	MarketplaceSlug   string
 	Tile              bool
+	ReleaseDate       string
 	TileName          string
 	TileVersion       string
 	TileSize          uint64

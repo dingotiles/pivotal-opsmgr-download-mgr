@@ -169,6 +169,7 @@ func (pivnetAPI *PivNet) updateProductTileInfo(tile *marketplaces.ProductTile) (
 		if len(tileTokens) == 3 {
 			productFileID = productFile.ID
 			tile.Tile = true
+			tile.ReleaseDate = latestReleaseDate
 			tile.TileName = strings.ToLower(tileTokens[1])
 			tile.TileVersion = tileTokens[2]
 			fmt.Printf("Found tile ID %d, named %s %s for product %s\n", productFileID, tile.TileName, tile.TileVersion, tile.Slug)

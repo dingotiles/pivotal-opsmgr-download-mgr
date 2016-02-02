@@ -27,18 +27,13 @@ type Product struct {
 
 // GetProducts gets the current product/versions that have been uploaded to OpsMgr
 func (opsmgr OpsMgr) GetProducts() (products *Products, err error) {
-	tr := &http.Transport{
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: opsmgr.SkipSSLVerification},
-	}
-	client := &http.Client{Transport: tr}
-
 	req, err := http.NewRequest("GET", opsmgr.apiURL("/api/products"), nil)
 	if err != nil {
 		return
 	}
 	req.SetBasicAuth(opsmgr.Username, opsmgr.Password)
 
-	resp, err := client.Do(req)
+	resp, err := opsmgr.httpClient().Do(req)
 	if err != nil {
 		return
 	}
@@ -85,4 +80,11 @@ func (opsmgr OpsMgr) GetProducts() (products *Products, err error) {
 
 func (opsmgr OpsMgr) apiURL(path string) string {
 	return fmt.Sprintf("%s%s", opsmgr.URL, path)
+}
+
+func (opsmgr OpsMgr) httpClient() *http.Client {
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: opsmgr.SkipSSLVerification},
+	}
+	return &http.Client{Transport: tr}
 }

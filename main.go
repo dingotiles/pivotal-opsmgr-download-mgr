@@ -1,8 +1,6 @@
 package main
 
 import (
-	"bufio"
-	"bytes"
 	"fmt"
 	"os"
 
@@ -13,13 +11,25 @@ import (
 	"github.com/go-martini/martini"
 )
 
+func downloadAndUploadTile(opsmgrAPI opsmgr.OpsMgr, catalog marketplaces.Marketplace, tile *marketplaces.ProductTile) {
+	fmt.Printf("starting download...\n")
+	downloadResponse, err := catalog.DownloadProductTileFile(tile)
+	if err != nil {
+		panic(err)
+	}
+	err = opsmgrAPI.UploadProductFile(tile, downloadResponse)
+	if err != nil {
+		panic(err)
+	}
+}
+
 func main() {
+	opsmgrAPI := opsmgr.NewOpsMgr()
 	catalogs := marketplaces.NewMarketplaces()
 	var products *opsmgr.Products
 	loadingCatalogs := true
 
 	go func() {
-		opsmgrAPI := opsmgr.NewOpsMgr()
 		fmt.Printf("Fetching uploaded products from OpsMgr %s...\n", opsmgrAPI.URL)
 		var err error
 		products, err = opsmgrAPI.GetProducts()
@@ -51,7 +61,7 @@ func main() {
 	}()
 
 	m := martini.Classic()
-	m.Use(render.Renderer())
+	m.Use(render.Renderer(render.Options{Layout: "layout"}))
 
 	m.Get("/", func(r render.Render) {
 		if products == nil {
@@ -79,14 +89,7 @@ func main() {
 			fmt.Printf("Unknown %s product %s\n", marketplaceSlug, tileSlug)
 			return
 		}
-
-		fmt.Println(tile)
-		buffer := &bytes.Buffer{}
-		body := bufio.NewWriter(buffer)
-		catalog.DownloadProductTileFile(tile, body)
-		fmt.Printf("Downloaded %v, size %d\n", tile, buffer.Len())
-
-		r.Redirect("/")
+		downloadAndUploadTile(opsmgrAPI, catalog, tile)
 	})
 	m.Run()
 }

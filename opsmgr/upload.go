@@ -16,19 +16,12 @@ func (opsmgr OpsMgr) UploadProductFile(tile *marketplaces.ProductTile, downloadR
 	readPipe, writePipe := io.Pipe()
 	writer := multipart.NewWriter(writePipe)
 
-	curlBoundary := "------------------------9f5f4cd1c5c81384"
-	err = writer.SetBoundary(curlBoundary)
-	if err != nil {
-		return
-	}
-
 	go func() {
 		fmt.Printf("create a multipart filter to 'pass through' the data...\n")
 		h := make(textproto.MIMEHeader)
 		h.Set("Content-Disposition", `form-data; name="product[file]"; filename="tile.pivotal"`)
 		h.Set("Content-Type", "application/octet-stream")
 
-		// h.Set("Content-Length", fmt.Sprintf("%d", tile.TileSize))
 		part, err := writer.CreatePart(h)
 		if err != nil {
 			return

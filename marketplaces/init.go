@@ -25,6 +25,7 @@ type ProductTile struct {
 	TileHumanSize     string
 	EULAAcceptanceURL string
 	ProductFileURL    string
+	ProductFileName   string
 }
 
 // Marketplace is an interface to PivNet or StarkAndWayneMarketplace

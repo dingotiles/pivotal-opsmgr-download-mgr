@@ -19,7 +19,7 @@ func (opsmgr OpsMgr) UploadProductFile(tile *marketplaces.ProductTile, downloadR
 	go func() {
 		fmt.Printf("create a multipart filter to 'pass through' the data...\n")
 		h := make(textproto.MIMEHeader)
-		h.Set("Content-Disposition", `form-data; name="product[file]"; filename="tile.pivotal"`)
+		h.Set("Content-Disposition", fmt.Sprintf(`form-data; name="product[file]"; filename="%s"`, tile.ProductFileName))
 		h.Set("Content-Type", "application/octet-stream")
 
 		part, err := writer.CreatePart(h)
@@ -41,19 +41,20 @@ func (opsmgr OpsMgr) UploadProductFile(tile *marketplaces.ProductTile, downloadR
 	req.SetBasicAuth(opsmgr.Username, opsmgr.Password)
 	req.Header.Add("Content-Type", writer.FormDataContentType())
 
-	fmt.Printf("start the 'cross load'...\n")
-	dump, err := httputil.DumpRequest(req, true)
-	if err == nil {
-		fmt.Println(string(dump[:500]))
-	}
+	// fmt.Printf("dump upload request...\n")
+	// dump, err := httputil.DumpRequest(req, true)
+	// if err == nil {
+	// 	fmt.Println(string(dump[:500]))
+	// }
 
+	fmt.Printf("start the 'cross load'...\n")
 	uploadResponse, err := opsmgr.httpClient().Do(req)
 	if err != nil {
 		fmt.Printf("error running upload: %s\n", err)
 		return
 	}
 	fmt.Printf("upload response: %v\n", uploadResponse)
-	dump, err = httputil.DumpResponse(uploadResponse, false)
+	dump, err := httputil.DumpResponse(uploadResponse, false)
 	if err == nil {
 		fmt.Println(string(dump))
 	}

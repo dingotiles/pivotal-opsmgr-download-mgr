@@ -84,7 +84,8 @@ func (opsmgr OpsMgr) apiURL(path string) string {
 
 func (opsmgr OpsMgr) httpClient() *http.Client {
 	tr := &http.Transport{
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: opsmgr.SkipSSLVerification},
+		TLSClientConfig:    &tls.Config{InsecureSkipVerify: opsmgr.SkipSSLVerification},
+		DisableCompression: true,
 	}
 	return &http.Client{Transport: tr}
 }

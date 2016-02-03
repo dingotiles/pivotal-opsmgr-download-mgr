@@ -10,8 +10,20 @@ import (
 
 // DownloadProductTileFile accepts the EULA & starts the download for a PivNet product file
 func (pivnetAPI *PivNet) DownloadProductTileFile(tile *marketplaces.ProductTile) (resp *http.Response, err error) {
-	fmt.Println("Accepting EULA for", tile.TileName, "via", tile.EULAAcceptanceURL)
-	req, err := http.NewRequest("POST", tile.EULAAcceptanceURL, nil)
+	return pivnetAPI.acceptEULAAndDownload(tile.TileName, tile.EULAAcceptanceURL, tile.ProductFileURL)
+}
+
+// DownloadProductStemcellFile accepts the EULA & starts the download for a PivNet product stemcell
+func (pivnetAPI *PivNet) DownloadProductStemcellFile(stemcell *marketplaces.ProductStemcell) (resp *http.Response, err error) {
+	return pivnetAPI.acceptEULAAndDownload(
+		fmt.Sprintf("Stemcell v%s", stemcell.Version),
+		stemcell.EULAAcceptanceURL,
+		stemcell.ProductFileURL)
+}
+
+func (pivnetAPI *PivNet) acceptEULAAndDownload(title string, eulaAcceptanceURL string, productFileURL string) (resp *http.Response, err error) {
+	fmt.Println("Accepting EULA for", title, "via", eulaAcceptanceURL)
+	req, err := http.NewRequest("POST", eulaAcceptanceURL, nil)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
@@ -27,7 +39,7 @@ func (pivnetAPI *PivNet) DownloadProductTileFile(tile *marketplaces.ProductTile)
 	}
 	defer resp.Body.Close()
 
-	downloadURL := fmt.Sprintf("%s/download", tile.ProductFileURL)
+	downloadURL := fmt.Sprintf("%s/download", productFileURL)
 	req, err = http.NewRequest("POST", downloadURL, nil)
 	if err != nil {
 		fmt.Println(err.Error())

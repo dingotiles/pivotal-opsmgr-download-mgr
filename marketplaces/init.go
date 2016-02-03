@@ -53,4 +53,5 @@ type Marketplace interface {
 	LookupProductTile(productName string) *ProductTile
 	LookupStemcell(version string) *ProductStemcell
 	DownloadProductTileFile(tile *ProductTile) (*http.Response, error)
+	DownloadProductStemcellFile(stemcell *ProductStemcell) (*http.Response, error)
 }

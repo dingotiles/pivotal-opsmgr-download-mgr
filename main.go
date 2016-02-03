@@ -23,6 +23,18 @@ func downloadAndUploadTile(opsmgrAPI opsmgr.OpsMgr, catalog marketplaces.Marketp
 	}
 }
 
+func downloadAndUploadStemcell(opsmgrAPI opsmgr.OpsMgr, catalog marketplaces.Marketplace, stemcell *marketplaces.ProductStemcell) {
+	fmt.Printf("starting stemcell download...\n")
+	downloadResponse, err := catalog.DownloadProductStemcellFile(stemcell)
+	if err != nil {
+		panic(err)
+	}
+	err = opsmgrAPI.UploadProductStemcell(stemcell, downloadResponse)
+	if err != nil {
+		panic(err)
+	}
+}
+
 func main() {
 	opsmgrAPI := opsmgr.NewOpsMgr()
 	catalogs := marketplaces.NewMarketplaces()
@@ -115,7 +127,7 @@ func main() {
 			return
 		}
 		fmt.Println("stemcell", stemcell)
-		// downloadAndUploadStemcell(opsmgrAPI, catalog, stemcell)
+		downloadAndUploadStemcell(opsmgrAPI, catalog, stemcell)
 	})
 	m.Run()
 }

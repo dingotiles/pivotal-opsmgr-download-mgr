@@ -4,12 +4,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"sync"
 
 	"github.com/dingodb/pivotal-opsmgr-download-mgr/marketplaces"
 )
 
-// UpdateProductTiles fetches available Product Tiles from Pivotal Network
-func (pivnetAPI *PivNet) UpdateProductTiles() (err error) {
+// UpdateProductCatalog fetches available Product Tiles from Pivotal Network
+func (pivnetAPI *PivNet) UpdateProductCatalog() (err error) {
 	req, err := http.NewRequest("GET", pivnetAPI.apiURL("/products"), nil)
 	if err != nil {
 		return
@@ -56,12 +57,22 @@ func (pivnetAPI *PivNet) UpdateProductTiles() (err error) {
 		return
 	}
 
-	for _, product := range productsResp.Products {
-		tile := &marketplaces.ProductTile{Slug: product.Slug, MarketplaceSlug: pivnetAPI.Slug()}
-		pivnetAPI.updateProductTileInfo(tile)
-
-		pivnetAPI.productTiles = append(pivnetAPI.productTiles, tile)
+	var wg sync.WaitGroup
+	for _, p := range productsResp.Products {
+		product := p
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			if product.Slug == "stemcells" {
+				pivnetAPI.updateStemcellsInfo("vsphere")
+			} else {
+				tile := &marketplaces.ProductTile{Slug: product.Slug, MarketplaceSlug: pivnetAPI.Slug()}
+				pivnetAPI.updateProductTileInfo(tile)
+				pivnetAPI.productTiles = append(pivnetAPI.productTiles, tile)
+			}
+		}()
 	}
+	wg.Wait()
 
 	return
 }

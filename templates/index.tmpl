@@ -16,7 +16,7 @@
     <td>{{$product.MarketplaceProductName}}</td>
     <td>{{$product.MarketplaceTileVersion}}</td>
     <td>
-      {{if $product.MarketplaceProductName}}<a href="/install/{{$product.Marketplace}}/{{$name}}">Install</a>{{else}}&nbsp;{{end}}
+      {{if $product.MarketplaceProductName}}<a href="/install/{{$product.Marketplace}}/tile/{{$name}}">Install</a>{{else}}&nbsp;{{end}}
     </td>
   </tr>
   {{end}}
@@ -42,8 +42,24 @@
     <td>{{$tile.TileVersion}}</td>
     <td>{{$tile.ReleaseDate}}</td>
     <td>{{$tile.TileHumanSize}}</td>
-    <td><a href="/install/{{$tile.MarketplaceSlug}}/{{$tile.TileName}}">Install</a></td>
+    <td><a href="/install/{{$tile.MarketplaceSlug}}/tile/{{$tile.TileName}}">Install</a></td>
   </tr>
   {{end}}
+  {{end}}
+</table>
+
+<h2>Stemcells</h2>
+<table>
+  <tr>
+    <th>Version</th>
+    <th>Release Date</th>
+    <th>&nbsp;</th>
+  </tr>
+  {{range $stemcell := .PivNetStemcells}}
+  <tr>
+    <td>{{$stemcell.Version}}</td>
+    <td>{{$stemcell.ReleaseDate}}</td>
+    <td><a href="/install/{{$stemcell.MarketplaceSlug}}/stemcell/{{$stemcell.Version}}">Install</a></td>
+  </tr>
   {{end}}
 </table>

@@ -48,7 +48,7 @@ func main() {
 
 		for _, catalog := range catalogs {
 			fmt.Printf("Fetching available product tiles from %s...\n", catalog.Name())
-			err := catalog.UpdateProductTiles()
+			err := catalog.UpdateProductCatalog()
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
@@ -70,11 +70,18 @@ func main() {
 			r.HTML(200, "index", struct {
 				OpsMgrProducts  *opsmgr.Products
 				PivNetTiles     marketplaces.ProductTiles
+				PivNetStemcells marketplaces.ProductStemcells
 				LoadingCatalogs bool
-			}{products, catalogs["pivnet"].ProductTiles(), loadingCatalogs})
+			}{
+				products,
+				catalogs["pivnet"].ProductTiles(),
+				catalogs["pivnet"].ProductStemcells(),
+				loadingCatalogs,
+			})
 		}
 	})
-	m.Get("/install/:marketplace/:tilename", func(params martini.Params, r render.Render) {
+
+	m.Get("/install/:marketplace/tile/:tilename", func(params martini.Params, r render.Render) {
 		marketplaceSlug := params["marketplace"]
 		r.Redirect("/")
 
@@ -90,6 +97,25 @@ func main() {
 			return
 		}
 		downloadAndUploadTile(opsmgrAPI, catalog, tile)
+	})
+
+	m.Get("/install/:marketplace/stemcell/:stemcell", func(params martini.Params, r render.Render) {
+		marketplaceSlug := params["marketplace"]
+		r.Redirect("/")
+
+		catalog := catalogs[marketplaceSlug]
+		if catalog == nil {
+			fmt.Println("Unknown :marketplace slug", marketplaceSlug)
+			return
+		}
+		stemcellVersion := params["stemcell"]
+		stemcell := catalog.LookupStemcell(stemcellVersion)
+		if stemcell == nil {
+			fmt.Printf("Unknown %s stemcell version %s\n", marketplaceSlug, stemcellVersion)
+			return
+		}
+		fmt.Println("stemcell", stemcell)
+		// downloadAndUploadStemcell(opsmgrAPI, catalog, stemcell)
 	})
 	m.Run()
 }

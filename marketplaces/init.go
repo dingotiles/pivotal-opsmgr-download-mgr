@@ -28,12 +28,29 @@ type ProductTile struct {
 	ProductFileName   string
 }
 
+// ProductStemcells is a list of stemcells for target CPI
+type ProductStemcells []*ProductStemcell
+
+// ProductStemcell presents a stemcell file that can be downloaded from a marketplace
+type ProductStemcell struct {
+	Slug              string
+	MarketplaceSlug   string
+	CPI               string
+	Version           string
+	ReleaseDate       string
+	EULAAcceptanceURL string
+	ProductFileURL    string
+	ProductFileName   string
+}
+
 // Marketplace is an interface to PivNet or StarkAndWayneMarketplace
 type Marketplace interface {
 	Name() string
 	Slug() string
-	UpdateProductTiles() error
+	UpdateProductCatalog() error
 	ProductTiles() ProductTiles
+	ProductStemcells() ProductStemcells
 	LookupProductTile(productName string) *ProductTile
+	LookupStemcell(version string) *ProductStemcell
 	DownloadProductTileFile(tile *ProductTile) (*http.Response, error)
 }

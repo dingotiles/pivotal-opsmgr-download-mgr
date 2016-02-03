@@ -10,6 +10,7 @@ import (
 type PivNet struct {
 	apiToken     string
 	productTiles marketplaces.ProductTiles
+	stemcells    marketplaces.ProductStemcells
 }
 
 // NewPivNet creates a new PivNet struct
@@ -32,4 +33,9 @@ func (pivnetAPI *PivNet) Slug() string {
 // ProductTiles returns the fetched Product Tiles for PivNet
 func (pivnetAPI *PivNet) ProductTiles() marketplaces.ProductTiles {
 	return pivnetAPI.productTiles
+}
+
+// ProductStemcells returns the available stemcells from PivNet
+func (pivnetAPI *PivNet) ProductStemcells() marketplaces.ProductStemcells {
+	return pivnetAPI.stemcells
 }

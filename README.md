@@ -28,7 +28,7 @@ The application will eventually run at http://localhost:3000
 
 ```bash
 appname=opsmgr-download-mgr
-cf push $appname -m 128M -k 2G --no-start
+cf push $appname -m 128M -k 256M --no-start
 cf set-env $appname OPSMGR_URL $OPSMGR_URL
 cf set-env $appname OPSMGR_SKIP_SSL_VERIFICATION $OPSMGR_SKIP_SSL_VERIFICATION
 cf set-env $appname OPSMGR_USERNAME $OPSMGR_USERNAME

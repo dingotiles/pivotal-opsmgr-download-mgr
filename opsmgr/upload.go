@@ -54,11 +54,11 @@ func (opsmgr OpsMgr) uploadFile(uploadEndpoint string, fileName string, download
 	req.SetBasicAuth(opsmgr.Username, opsmgr.Password)
 	req.Header.Add("Content-Type", writer.FormDataContentType())
 
-	// fmt.Printf("dump upload request...\n")
-	// dump, err := httputil.DumpRequest(req, true)
-	// if err == nil {
-	// 	fmt.Println(string(dump[:500]))
-	// }
+	fmt.Printf("dump upload %s request...\n", uploadEndpoint)
+	dump, err := httputil.DumpRequest(req, false)
+	if err == nil {
+		fmt.Println(string(dump))
+	}
 
 	fmt.Printf("start the 'cross load'...\n")
 	uploadResponse, err := opsmgr.httpClient().Do(req)
@@ -66,8 +66,8 @@ func (opsmgr OpsMgr) uploadFile(uploadEndpoint string, fileName string, download
 		fmt.Printf("error running upload: %s\n", err)
 		return
 	}
-	fmt.Printf("upload response: %v\n", uploadResponse)
-	dump, err := httputil.DumpResponse(uploadResponse, false)
+	fmt.Printf("upload %s response: %v\n", uploadEndpoint, uploadResponse)
+	dump, err = httputil.DumpResponse(uploadResponse, false)
 	if err == nil {
 		fmt.Println(string(dump))
 	}

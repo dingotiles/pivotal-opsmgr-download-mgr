@@ -1,6 +1,10 @@
 package opsmgr
 
-import "github.com/hashicorp/go-version"
+import (
+	"regexp"
+
+	"github.com/hashicorp/go-version"
+)
 
 // Product includes the uploaded product tile versions, and reference to the marketplace/tile name
 type Product struct {
@@ -12,4 +16,15 @@ type Product struct {
 	MarketplaceProductName string
 	MarketplaceTileName    string
 	MarketplaceTileVersion string
+}
+
+// NewTileAvailable is true if MarketplaceTileVersion indicates a newer version than LatestVersion
+func (product *Product) NewTileAvailable() bool {
+	if product.MarketplaceTileVersion == "" {
+		return false
+	}
+	buildSuffix, _ := regexp.Compile("-build.*")
+	uploadedVersion := buildSuffix.ReplaceAllString(product.LatestVersion, "")
+	marketplaceVersion := buildSuffix.ReplaceAllString(product.MarketplaceTileVersion, "")
+	return uploadedVersion != marketplaceVersion
 }

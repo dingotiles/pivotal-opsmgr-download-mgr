@@ -16,7 +16,9 @@
     <td>{{$product.MarketplaceProductName}}</td>
     <td>{{$product.MarketplaceTileVersion}}</td>
     <td>
-      {{if $product.MarketplaceProductName}}<a href="/install/{{$product.Marketplace}}/tile/{{$name}}">Install</a>{{else}}&nbsp;{{end}}
+      {{if $product.NewTileAvailable}}
+      <a href="/install/{{$product.Marketplace}}/tile/{{$name}}">Install</a>
+      {{else}}&nbsp;{{end}}
     </td>
   </tr>
   {{end}}

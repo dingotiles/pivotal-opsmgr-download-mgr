@@ -129,5 +129,14 @@ func main() {
 		fmt.Println("stemcell", stemcell)
 		downloadAndUploadStemcell(opsmgrAPI, catalog, stemcell)
 	})
+
+	m.Get("/deleteunused", func(r render.Render) {
+		err := opsmgrAPI.DeleteUnusedTiles()
+		if err != nil {
+			fmt.Println("/deleteunused", err)
+		}
+		r.Redirect("/")
+	})
+
 	m.Run()
 }

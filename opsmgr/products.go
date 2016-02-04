@@ -48,6 +48,9 @@ func (opsmgr OpsMgr) GetProducts() (products *Products, err error) {
 	products = &Products{}
 	for _, productVersion := range productsResp {
 		name := productVersion.Name
+		if name == "p-bosh" {
+			continue
+		}
 		product := (*products)[name]
 		if product == nil {
 			product = &Product{}

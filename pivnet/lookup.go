@@ -13,9 +13,20 @@ import (
 )
 
 // LookupProductTile tries to match an Opsmgr Product name with a PivNet product/release/.pivotal tile
+// The product tile name (found inside the .pivotal file) might not match any of the names in the PivNet catalog
+// The algorithm removes any "p-" prefix and tries to find a match to a tile name or product name
 func (pivnetAPI *PivNet) LookupProductTile(opsMgrProductName string) *marketplaces.ProductTile {
+	pPrefix, _ := regexp.Compile("^p-")
+	opsMgrProdNameToken := pPrefix.ReplaceAllString(opsMgrProductName, "")
+
 	for _, product := range pivnetAPI.productTiles {
-		if product.TileName == opsMgrProductName {
+		tileNameToken := pPrefix.ReplaceAllString(product.TileName, "")
+		productNameToken := pPrefix.ReplaceAllString(product.Slug, "")
+		if tileNameToken == opsMgrProdNameToken || productNameToken == opsMgrProdNameToken {
+			return product
+		}
+		// HACK nasty hard coded mapping that can't be easily algorithmed
+		if opsMgrProductName == "p-push-notifications" && product.Slug == "push-notification-service" {
 			return product
 		}
 	}

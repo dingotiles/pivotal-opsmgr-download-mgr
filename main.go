@@ -11,15 +11,32 @@ import (
 	"github.com/go-martini/martini"
 )
 
+var products *opsmgr.Products
+var catalogs marketplaces.Marketplaces
+
 func downloadAndUploadTile(opsmgrAPI opsmgr.OpsMgr, catalog marketplaces.Marketplace, tile *marketplaces.ProductTile) {
 	fmt.Printf("starting download...\n")
 	downloadResponse, err := catalog.DownloadProductTileFile(tile)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
+		return
 	}
 	err = opsmgrAPI.UploadProductFile(tile, downloadResponse)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
+		return
+	}
+
+	products, err = opsmgrAPI.GetProducts()
+	products.DetermineMarketplaceMappings(catalogs)
+
+	// Errors:
+	// - no VPN or bad URL - "Get https://10.58.111.65/api/products: dial tcp 10.58.111.65:443: i/o timeout"
+	// - bad connection - "Get https://10.58.111.65/api/products: net/http: TLS handshake timeout"
+	// - need to skip SSL validation - "Get https://10.58.111.65/api/products: x509: cannot validate certificate for 10.58.111.65 because it doesn't contain any IP SANs"
+	if err != nil {
+		fmt.Println(err)
+		return
 	}
 }
 
@@ -37,8 +54,7 @@ func downloadAndUploadStemcell(opsmgrAPI opsmgr.OpsMgr, catalog marketplaces.Mar
 
 func main() {
 	opsmgrAPI := opsmgr.NewOpsMgr()
-	catalogs := marketplaces.NewMarketplaces()
-	var products *opsmgr.Products
+	catalogs = marketplaces.NewMarketplaces()
 	loadingCatalogs := true
 
 	go func() {

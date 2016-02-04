@@ -1,6 +1,11 @@
 package opsmgr
 
-import "os"
+import (
+	"crypto/tls"
+	"fmt"
+	"net/http"
+	"os"
+)
 
 // OpsMgr is configuration for a target OpsMgr deployment
 type OpsMgr struct {
@@ -25,4 +30,16 @@ func NewOpsMgr() OpsMgr {
 		Username:            os.Getenv("OPSMGR_USERNAME"),
 		Password:            os.Getenv("OPSMGR_PASSWORD"),
 	}
+}
+
+func (opsmgr OpsMgr) apiURL(path string) string {
+	return fmt.Sprintf("%s%s", opsmgr.URL, path)
+}
+
+func (opsmgr OpsMgr) httpClient() *http.Client {
+	tr := &http.Transport{
+		TLSClientConfig:    &tls.Config{InsecureSkipVerify: opsmgr.SkipSSLVerification},
+		DisableCompression: true,
+	}
+	return &http.Client{Transport: tr}
 }

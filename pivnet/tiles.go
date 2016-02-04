@@ -78,5 +78,5 @@ func (pivnetAPI *PivNet) UpdateProductCatalog() (err error) {
 }
 
 func (pivnetAPI PivNet) apiURL(path string) string {
-	return fmt.Sprintf("https://network.pivotal.io/api/v2%s", path)
+	return pivnetAPI.apiEndpoint + path
 }

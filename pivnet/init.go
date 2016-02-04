@@ -1,22 +1,20 @@
 package pivnet
 
-import (
-	"os"
-
-	"github.com/dingodb/pivotal-opsmgr-download-mgr/marketplaces"
-)
+import "github.com/dingodb/pivotal-opsmgr-download-mgr/marketplaces"
 
 // PivNet is configuration for a target Pivotal Network access account
 type PivNet struct {
 	apiToken     string
+	apiEndpoint  string
 	productTiles marketplaces.ProductTiles
 	stemcells    marketplaces.ProductStemcells
 }
 
 // NewPivNet creates a new PivNet struct
-func NewPivNet() *PivNet {
+func NewPivNet(apiToken string, apiEndpoint string) *PivNet {
 	return &PivNet{
-		apiToken: os.Getenv("PIVOTAL_NETWORK_TOKEN"),
+		apiToken:    apiToken,
+		apiEndpoint: apiEndpoint,
 	}
 }
 

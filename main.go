@@ -71,7 +71,7 @@ func main() {
 			os.Exit(1)
 		}
 
-		catalog := pivnet.NewPivNet()
+		catalog := pivnet.NewPivNet(os.Getenv("PIVOTAL_NETWORK_TOKEN"), "https://network.pivotal.io/api/v2")
 		catalogs[catalog.Slug()] = catalog
 
 		for _, catalog := range catalogs {

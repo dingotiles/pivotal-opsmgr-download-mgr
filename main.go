@@ -57,7 +57,7 @@ func downloadAndUploadStemcell(opsmgrAPI *opsmgr.OpsMgr, catalog marketplaces.Ma
 	}
 }
 
-func uploadNewStemcells(stemcells marketplaces.ProductStemcells) {
+func uploadNewStemcells(opsmgrAPI *opsmgr.OpsMgr, catalog marketplaces.Marketplace, stemcells marketplaces.ProductStemcells) {
 	latestStemcellVersionUploaded, _ := version.NewVersion("0.0.0")
 	for _, productStemcell := range stemcells {
 		stemcellVersion, err := version.NewVersion(productStemcell.Version)
@@ -71,10 +71,14 @@ func uploadNewStemcells(stemcells marketplaces.ProductStemcells) {
 	}
 
 	// Upload any product stemcell that is newer
-	for _, productStemcell := range stemcells {
+	for _, s := range stemcells {
+		productStemcell := s
 		stemcellVersion, _ := version.NewVersion(productStemcell.Version)
 		if latestStemcellVersionUploaded.LessThan(stemcellVersion) {
-			fmt.Println("Uploading stemcell", productStemcell)
+			go func() {
+				fmt.Println("Uploading stemcell", productStemcell)
+				downloadAndUploadStemcell(opsmgrAPI, catalog, productStemcell)
+			}()
 		}
 	}
 }
@@ -121,7 +125,7 @@ func main() {
 		}
 
 		catalog.DetermineStemcellsUploaded(directorStemcells)
-		uploadNewStemcells(catalog.ProductStemcells())
+		uploadNewStemcells(opsmgrAPI, catalog, catalog.ProductStemcells())
 
 		loadingCatalogs = false
 	}()

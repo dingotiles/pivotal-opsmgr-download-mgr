@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/cloudfoundry-community/gogobosh/models"
 	"github.com/codegangsta/martini-contrib/render"
 	"github.com/dingodb/pivotal-opsmgr-download-mgr/marketplaces"
 	"github.com/dingodb/pivotal-opsmgr-download-mgr/opsmgr"
@@ -12,6 +13,7 @@ import (
 )
 
 var products *opsmgr.Products
+var directorStemcells models.Stemcells
 var catalogs marketplaces.Marketplaces
 
 func downloadAndUploadTile(opsmgrAPI *opsmgr.OpsMgr, catalog marketplaces.Marketplace, tile *marketplaces.ProductTile) {
@@ -70,6 +72,12 @@ func main() {
 			fmt.Println(err)
 			os.Exit(1)
 		}
+
+		directorStemcells, err = opsmgrAPI.GetStemcells()
+		if err != nil {
+			fmt.Println(err)
+		}
+
 		products.DetermineMarketplaceMappings(catalogs)
 	}()
 	go func() {
@@ -77,7 +85,7 @@ func main() {
 		catalogs[catalog.Slug()] = catalog
 
 		for _, catalog := range catalogs {
-			fmt.Printf("Fetching available product tiles from %s...\n", catalog.Name())
+			fmt.Printf("Fetching available product tiles & stemcells from %s...\n", catalog.Name())
 			err := catalog.UpdateProductCatalog()
 			if err != nil {
 				fmt.Println(err)
@@ -87,6 +95,8 @@ func main() {
 		}
 
 		products.DetermineMarketplaceMappings(catalogs)
+		catalog.DetermineStemcellsUploaded(directorStemcells)
+
 		loadingCatalogs = false
 	}()
 
@@ -111,7 +121,7 @@ func main() {
 		}
 	})
 	m.Get("/director", func(r render.Render) {
-		director, err := opsmgrAPI.GetDirector()
+		director, err := opsmgrAPI.GetDirectorConfig()
 
 		r.HTML(200, "director", struct {
 			Director *opsmgr.Director

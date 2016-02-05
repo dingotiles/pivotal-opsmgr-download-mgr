@@ -64,7 +64,11 @@
   <tr>
     <td>{{$stemcell.Version}}</td>
     <td>{{$stemcell.ReleaseDate}}</td>
-    <td><a href="/install/{{$stemcell.MarketplaceSlug}}/stemcell/{{$stemcell.Version}}">Install</a></td>
+    <td>
+      {{if $stemcell.Uploaded}}uploaded
+      {{else}}<a href="/install/{{$stemcell.MarketplaceSlug}}/stemcell/{{$stemcell.Version}}">Install</a>
+      {{end}}
+    </td>
   </tr>
   {{end}}
 </table>

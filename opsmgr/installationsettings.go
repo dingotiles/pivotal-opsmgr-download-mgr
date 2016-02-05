@@ -2,6 +2,7 @@ package opsmgr
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 )
 
@@ -103,6 +104,7 @@ type SecurityProperty struct {
 // GetInstallationSettings gets the installation settings from target OpsMgr
 // Currently limited to v1.6 API
 func (opsmgr *OpsMgr) GetInstallationSettings() (err error) {
+	fmt.Println("Fetching OpsMgr installation settings...")
 	req, err := http.NewRequest("GET", opsmgr.apiURL("/api/installation_settings"), nil)
 	if err != nil {
 		return

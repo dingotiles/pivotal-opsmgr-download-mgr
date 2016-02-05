@@ -1,6 +1,10 @@
 package marketplaces
 
-import "net/http"
+import (
+	"net/http"
+
+	"github.com/cloudfoundry-community/gogobosh/models"
+)
 
 // Marketplaces references all configured Marketplace APIs, such as PivNet, indexed by Slug
 type Marketplaces map[string]Marketplace
@@ -37,6 +41,7 @@ type ProductStemcell struct {
 	MarketplaceSlug   string
 	CPI               string
 	Version           string
+	Uploaded          bool
 	ReleaseDate       string
 	EULAAcceptanceURL string
 	ProductFileURL    string
@@ -54,4 +59,5 @@ type Marketplace interface {
 	LookupStemcell(version string) *ProductStemcell
 	DownloadProductTileFile(tile *ProductTile) (*http.Response, error)
 	DownloadProductStemcellFile(stemcell *ProductStemcell) (*http.Response, error)
+	DetermineStemcellsUploaded(directorStemcells models.Stemcells) (err error)
 }

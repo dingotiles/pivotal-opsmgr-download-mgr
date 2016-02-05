@@ -3,18 +3,23 @@ package opsmgr
 import (
 	"fmt"
 	"strings"
+
+	"github.com/cloudfoundry-community/gogobosh"
+	"github.com/cloudfoundry-community/gogobosh/api"
+	"github.com/cloudfoundry-community/gogobosh/models"
+	"github.com/cloudfoundry-community/gogobosh/net"
 )
 
 // Director connection details for BOSH director managed by OpsMgr
 type Director struct {
-	URL      string
+	Target   string
 	IP       string
 	Username string
 	Password string
 }
 
-// GetDirector discovers the connection credentials to OpsMgr Director
-func (opsmgr *OpsMgr) GetDirector() (director *Director, err error) {
+// GetDirectorConfig discovers the connection credentials to OpsMgr Director
+func (opsmgr *OpsMgr) GetDirectorConfig() (director *Director, err error) {
 	if opsmgr.InstallationSettings == nil {
 		err = opsmgr.GetInstallationSettings()
 		if err != nil {
@@ -41,9 +46,25 @@ func (opsmgr *OpsMgr) GetDirector() (director *Director, err error) {
 				break
 			}
 
-			director.URL = fmt.Sprintf("https://%s:25555", director.IP)
+			director.Target = fmt.Sprintf("https://%s:25555", director.IP)
 		}
 	}
 
+	return
+}
+
+// GetStemcells fetches uploaded stemcells from OpsMgr Director
+func (opsmgr *OpsMgr) GetStemcells() (stemcells models.Stemcells, err error) {
+	fmt.Println("Fetching OpsMgr Director stemcells...")
+	directorConfig, err := opsmgr.GetDirectorConfig()
+	if err != nil {
+		return
+	}
+	director := gogobosh.NewDirector(directorConfig.Target, directorConfig.Username, directorConfig.Password)
+	repo := api.NewBoshDirectorRepository(&director, net.NewDirectorGateway())
+	stemcells, apiResponse := repo.GetStemcells()
+	if apiResponse.IsNotSuccessful() {
+		return stemcells, fmt.Errorf("Director API error: %s", apiResponse.Message)
+	}
 	return
 }

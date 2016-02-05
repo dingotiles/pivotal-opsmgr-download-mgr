@@ -1,0 +1,3614 @@
+{
+  "guid": "74660e4ed8922146ec6d",
+  "installation_schema_version": "1.6",
+  "infrastructure": {
+    "type": "vsphere",
+    "vm_password_type": "generate",
+    "director_configuration": {
+      "resurrector_enabled": true,
+      "ntp_servers": [
+        "10.58.20.2",
+        "10.57.20.2"
+      ],
+      "blobstore_type": "local",
+      "database_type": "internal"
+    },
+    "networks": [
+      {
+        "guid": "4fd3d742337fdc132edb",
+        "name": "Default Private",
+        "iaas_network_identifier": "net-10-58-111-0",
+        "subnet": "10.58.111.0/24",
+        "dns": "10.58.20.2,10.57.20.2",
+        "gateway": "10.58.111.1",
+        "reserved_ip_ranges": "10.58.111.0-10.58.111.65,10.58.111.171-10.58.111.255"
+      }
+    ],
+    "availability_zones": [
+      {
+        "guid": "cac94a070a81fd8f3931",
+        "name": "default",
+        "cluster": "cluster1"
+      }
+    ],
+    "iaas_configuration": {
+      "datacenter": "Interxion MAD2",
+      "vcenter_ip": "10.58.111.2",
+      "vcenter_username": "admin",
+      "vcenter_password": "Stark;750,wayneSS",
+      "datastores": [
+        "vol309",
+        "vol310"
+      ],
+      "bosh_vm_folder": "pcf_vms",
+      "bosh_template_folder": "pcf_templates",
+      "bosh_disk_path": "pcf_disk"
+    }
+  },
+  "products": [
+    {
+      "guid": "p-bosh-f93dc37aed3d3b4d03e9",
+      "installation_name": "p-bosh-f93dc37aed3d3b4d03e9",
+      "product_version": "1.6.7.0",
+      "singleton_availability_zone_reference": "cac94a070a81fd8f3931",
+      "ips": {
+        "director-c28d5ec8df21073fcae9-partition-cac94a070a81fd8f3931": [
+          "10.58.111.66"
+        ]
+      },
+      "prepared": true,
+      "stemcell": {
+        "infrastructure": "vsphere",
+        "hypervisor": "esxi",
+        "os": "ubuntu-trusty",
+        "version": "3146.3",
+        "file": "bosh-stemcell-3146.3-vsphere-esxi-ubuntu-trusty-go_agent.tgz",
+        "name": "bosh-vsphere-esxi-ubuntu-trusty-go_agent"
+      },
+      "jobs": [
+        {
+          "guid": "director-c28d5ec8df21073fcae9",
+          "installation_name": "director",
+          "properties": [
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "e31d68a10f177106",
+                "password": "vm_credentials-password"
+              },
+              "identifier": "vm_credentials"
+            },
+            {
+              "value": {
+                "identity": "vcap",
+                "password": "agent_credentials-password"
+              },
+              "identifier": "agent_credentials"
+            },
+            {
+              "value": {
+                "identity": "registry",
+                "password": "registry_credentials-password"
+              },
+              "identifier": "registry_credentials"
+            },
+            {
+              "value": {
+                "identity": "director",
+                "password": "director_credentials-password"
+              },
+              "identifier": "director_credentials"
+            },
+            {
+              "value": {
+                "identity": "nats",
+                "password": "nats_credentials-password"
+              },
+              "identifier": "nats_credentials"
+            },
+            {
+              "value": {
+                "identity": "redis",
+                "password": "redis_credentials-password"
+              },
+              "identifier": "redis_credentials"
+            },
+            {
+              "value": {
+                "identity": "postgres",
+                "password": "postgres_credentials-password"
+              },
+              "identifier": "postgres_credentials"
+            },
+            {
+              "value": {
+                "identity": "blobstore",
+                "password": "blobstore_credentials-password"
+              },
+              "identifier": "blobstore_credentials"
+            },
+            {
+              "value": {
+                "identity": "health_monitor",
+                "password": "health_monitor_credentials-password"
+              },
+              "identifier": "health_monitor_credentials"
+            },
+            {
+              "value": {
+                "private_key_pem": "-----BEGIN RSA PRIVATE KEY-----\nXXXX\n-----END RSA PRIVATE KEY-----\n",
+                "cert_pem": "-----BEGIN CERTIFICATE-----\nXXXX\n-----END CERTIFICATE-----\n"
+              },
+              "identifier": "director_ssl"
+            }
+          ],
+          "instances": [
+            {
+              "value": 1,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 3072,
+              "identifier": "ram"
+            },
+            {
+              "value": 25600,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 40960,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 2,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "director-c28d5ec8df21073fcae9",
+              "installation_name": "director-partition-cac94a070a81fd8f3931",
+              "instance_count": 1,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "director"
+        }
+      ],
+      "infrastructure_network_reference": "4fd3d742337fdc132edb",
+      "deployment_network_reference": "4fd3d742337fdc132edb",
+      "identifier": "p-bosh"
+    },
+    {
+      "guid": "cf-6cd776bba8e791d40f64",
+      "installation_name": "cf-6cd776bba8e791d40f64",
+      "product_version": "1.6.14-build.11",
+      "singleton_availability_zone_reference": "cac94a070a81fd8f3931",
+      "network_reference": "4fd3d742337fdc132edb",
+      "availability_zone_references": [
+        "cac94a070a81fd8f3931"
+      ],
+      "disabled_post_deploy_errand_names": [
+        "push-apps-manager",
+        "smoke-tests",
+        "push-app-usage-service",
+        "notifications",
+        "notifications-ui",
+        "autoscaling",
+        "autoscaling-register-broker"
+      ],
+      "ips": {
+        "consul_server-d131cd94e8668ff3d495-partition-cac94a070a81fd8f3931": [
+          "10.58.111.67"
+        ],
+        "nats-8776f14795ba13ec0d00-partition-cac94a070a81fd8f3931": [
+          "10.58.111.68"
+        ],
+        "etcd_server-2a2d1a813bd8f73be92b-partition-cac94a070a81fd8f3931": [
+          "10.58.111.69"
+        ],
+        "diego_database-8c4461929582ffcab644-partition-cac94a070a81fd8f3931": [
+          "10.58.111.70"
+        ],
+        "nfs_server-0b58f983e83cf5efc7be-partition-cac94a070a81fd8f3931": [
+          "10.58.111.71"
+        ],
+        "router-26880d07b0565f28c589-partition-cac94a070a81fd8f3931": [
+          "10.58.111.72"
+        ],
+        "mysql_proxy-c1b826836c7da460158b-partition-cac94a070a81fd8f3931": [
+          "10.58.111.73"
+        ],
+        "mysql-07d1c9e61727a8be2693-partition-cac94a070a81fd8f3931": [
+          "10.58.111.74"
+        ],
+        "ccdb-5ddd892ab08686f0eee5-partition-cac94a070a81fd8f3931": [],
+        "uaadb-8204356e727865bdd295-partition-cac94a070a81fd8f3931": [],
+        "consoledb-ffe27af00f2b2e13fee2-partition-cac94a070a81fd8f3931": [],
+        "cloud_controller-ede354c9430432fa6d99-partition-cac94a070a81fd8f3931": [
+          "10.58.111.75"
+        ],
+        "ha_proxy-2cd24981e30f5cd2db79-partition-cac94a070a81fd8f3931": [
+          "10.58.111.76"
+        ],
+        "health_manager-cadb9cec01e9dc558ffb-partition-cac94a070a81fd8f3931": [],
+        "clock_global-a46095096ec1ff12fbbe-partition-cac94a070a81fd8f3931": [
+          "10.58.111.77"
+        ],
+        "cloud_controller_worker-51ec3b1b17e261a07a65-partition-cac94a070a81fd8f3931": [
+          "10.58.111.78"
+        ],
+        "collector-3e79b8cfa25b90cecbd3-partition-cac94a070a81fd8f3931": [],
+        "uaa-4e1733c0b2ec09bec5ab-partition-cac94a070a81fd8f3931": [
+          "10.58.111.79"
+        ],
+        "diego_brain-ed53bf49fc5a7dfb62e4-partition-cac94a070a81fd8f3931": [
+          "10.58.111.80"
+        ],
+        "diego_cell-c9b4087db45fbc6e0e60-partition-cac94a070a81fd8f3931": [
+          "10.58.111.81",
+          "10.58.111.82",
+          "10.58.111.83"
+        ],
+        "dea-4abbe1ee776d8b0722c7-partition-cac94a070a81fd8f3931": [],
+        "doppler-4bb7a54738cb8c25010d-partition-cac94a070a81fd8f3931": [
+          "10.58.111.84"
+        ],
+        "loggregator_trafficcontroller-3a1b71ecfed752b45174-partition-cac94a070a81fd8f3931": [
+          "10.58.111.85"
+        ],
+        "push-apps-manager-08e3edb960eeeff65baf-partition-cac94a070a81fd8f3931": [
+          "10.58.111.86"
+        ],
+        "push-app-usage-service-6a2b7067fe713720e072-partition-cac94a070a81fd8f3931": [
+          "10.58.111.87"
+        ],
+        "smoke-tests-18772354f972d3ebda6e-partition-cac94a070a81fd8f3931": [
+          "10.58.111.88"
+        ],
+        "notifications-bb6007db68cdb3258201-partition-cac94a070a81fd8f3931": [
+          "10.58.111.89"
+        ],
+        "notifications-tests-cf5d3345eab7767a4a79-partition-cac94a070a81fd8f3931": [
+          "10.58.111.90"
+        ],
+        "notifications-ui-87bbd072f5be58b0021b-partition-cac94a070a81fd8f3931": [
+          "10.58.111.91"
+        ],
+        "notifications-ui-tests-5cb66cf095ec1dea893c-partition-cac94a070a81fd8f3931": [
+          "10.58.111.92"
+        ],
+        "autoscaling-80f499cbf5cdf1a1390d-partition-cac94a070a81fd8f3931": [
+          "10.58.111.93"
+        ],
+        "autoscaling-register-broker-1a86e32a157338db0ba4-partition-cac94a070a81fd8f3931": [
+          "10.58.111.94"
+        ],
+        "autoscaling-destroy-broker-18dda2bc4a119f065a07-partition-cac94a070a81fd8f3931": [
+          "10.58.111.95"
+        ],
+        "autoscaling-tests-f68a974a25cdd54b8a64-partition-cac94a070a81fd8f3931": [
+          "10.58.111.96"
+        ],
+        "diego-acceptance-tests-7263bf59efeb36579a48-partition-cac94a070a81fd8f3931": [
+          "10.58.111.97"
+        ],
+        "acceptance-tests-1f18b0d143672295a506-partition-cac94a070a81fd8f3931": [
+          "10.58.111.98"
+        ],
+        "acceptance-tests-internetless-b7807a92732467fb3e4c-partition-cac94a070a81fd8f3931": [
+          "10.58.111.99"
+        ],
+        "compilation-04a866af744b6afc8fb5-partition-cac94a070a81fd8f3931": [
+          "10.58.111.100",
+          "10.58.111.101",
+          "10.58.111.102",
+          "10.58.111.103"
+        ],
+        "dynamic_for_static": [
+          "10.58.111.104",
+          "10.58.111.105",
+          "10.58.111.106",
+          "10.58.111.107",
+          "10.58.111.108",
+          "10.58.111.109",
+          "10.58.111.110",
+          "10.58.111.111",
+          "10.58.111.112",
+          "10.58.111.113",
+          "10.58.111.114",
+          "10.58.111.115",
+          "10.58.111.116",
+          "10.58.111.117",
+          "10.58.111.118"
+        ]
+      },
+      "prepared": true,
+      "stemcell": {
+        "infrastructure": "vsphere",
+        "hypervisor": "esxi",
+        "os": "ubuntu-trusty",
+        "version": "3146.6",
+        "file": "bosh-stemcell-3146.6-vsphere-esxi-ubuntu-trusty-go_agent.tgz",
+        "name": "bosh-vsphere-esxi-ubuntu-trusty-go_agent"
+      },
+      "jobs": [
+        {
+          "guid": "consul_server-d131cd94e8668ff3d495",
+          "installation_name": "consul_server",
+          "properties": [
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "6b5fad7afe4a9442",
+                "password": "vm_credentials-password"
+              },
+              "identifier": "vm_credentials"
+            }
+          ],
+          "instances": [
+            {
+              "value": 1,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 1024,
+              "identifier": "ram"
+            },
+            {
+              "value": 2048,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 1024,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 1,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "consul_server-d131cd94e8668ff3d495",
+              "installation_name": "consul_server-partition-cac94a070a81fd8f3931",
+              "instance_count": 1,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "consul_server"
+        },
+        {
+          "guid": "nats-8776f14795ba13ec0d00",
+          "installation_name": "nats",
+          "properties": [
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "95b5baa76a7292fc",
+                "password": "fakepassword"
+              },
+              "identifier": "vm_credentials"
+            },
+            {
+              "value": {
+                "identity": "nats",
+                "password": "fakepassword"
+              },
+              "identifier": "credentials"
+            }
+          ],
+          "instances": [
+            {
+              "value": 1,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 1024,
+              "identifier": "ram"
+            },
+            {
+              "value": 2048,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 0,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 1,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "nats-8776f14795ba13ec0d00",
+              "installation_name": "nats-partition-cac94a070a81fd8f3931",
+              "instance_count": 1,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "nats"
+        },
+        {
+          "guid": "etcd_server-2a2d1a813bd8f73be92b",
+          "installation_name": "etcd_server",
+          "properties": [
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "cd037814521da81d",
+                "password": "fakepassword"
+              },
+              "identifier": "vm_credentials"
+            }
+          ],
+          "instances": [
+            {
+              "value": 1,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 1024,
+              "identifier": "ram"
+            },
+            {
+              "value": 2048,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 1024,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 1,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "etcd_server-2a2d1a813bd8f73be92b",
+              "installation_name": "etcd_server-partition-cac94a070a81fd8f3931",
+              "instance_count": 1,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "etcd_server"
+        },
+        {
+          "guid": "diego_database-8c4461929582ffcab644",
+          "installation_name": "diego_database",
+          "properties": [
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "8685a2372243884d",
+                "password": "fakepassword"
+              },
+              "identifier": "vm_credentials"
+            },
+            {
+              "value": {
+                "secret": "fb7e1333d324e76290ac"
+              },
+              "identifier": "bbs_encryption_passphrase"
+            }
+          ],
+          "instances": [
+            {
+              "value": 1,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 1024,
+              "identifier": "ram"
+            },
+            {
+              "value": 2048,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 1024,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 1,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "diego_database-8c4461929582ffcab644",
+              "installation_name": "diego_database-partition-cac94a070a81fd8f3931",
+              "instance_count": 1,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "diego_database"
+        },
+        {
+          "guid": "nfs_server-0b58f983e83cf5efc7be",
+          "installation_name": "nfs_server",
+          "properties": [
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "002e8bcd8fde205b",
+                "password": "fakepassword"
+              },
+              "identifier": "vm_credentials"
+            }
+          ],
+          "instances": [
+            {
+              "value": 1,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 1024,
+              "identifier": "ram"
+            },
+            {
+              "value": 2048,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 102400,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 1,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "nfs_server-0b58f983e83cf5efc7be",
+              "installation_name": "nfs_server-partition-cac94a070a81fd8f3931",
+              "instance_count": 1,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "nfs_server"
+        },
+        {
+          "guid": "router-26880d07b0565f28c589",
+          "installation_name": "router",
+          "properties": [
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "dc4a9ec35f1a056d",
+                "password": "fakepassword"
+              },
+              "identifier": "vm_credentials"
+            },
+            {
+              "value": {
+                "identity": "router_status",
+                "password": "fakepassword"
+              },
+              "identifier": "status_credentials"
+            },
+            {
+              "identifier": "static_ips"
+            },
+            {
+              "identifier": "ssl_ciphers"
+            },
+            {
+              "value": true,
+              "identifier": "enable_ssl"
+            }
+          ],
+          "instances": [
+            {
+              "value": 1,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 1024,
+              "identifier": "ram"
+            },
+            {
+              "value": 2048,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 0,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 1,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "router-26880d07b0565f28c589",
+              "installation_name": "router-partition-cac94a070a81fd8f3931",
+              "instance_count": 1,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "router"
+        },
+        {
+          "guid": "mysql_proxy-c1b826836c7da460158b",
+          "installation_name": "mysql_proxy",
+          "properties": [
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "d711596a590d5de4",
+                "password": "fakepassword"
+              },
+              "identifier": "vm_credentials"
+            },
+            {
+              "identifier": "static_ips"
+            },
+            {
+              "identifier": "service_hostname"
+            },
+            {
+              "value": {
+                "identity": "admin",
+                "password": "fakepassword"
+              },
+              "identifier": "dashboard_credentials"
+            }
+          ],
+          "instances": [
+            {
+              "value": 1,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 1024,
+              "identifier": "ram"
+            },
+            {
+              "value": 4096,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 0,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 1,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "mysql_proxy-c1b826836c7da460158b",
+              "installation_name": "mysql_proxy-partition-cac94a070a81fd8f3931",
+              "instance_count": 1,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "mysql_proxy"
+        },
+        {
+          "guid": "mysql-07d1c9e61727a8be2693",
+          "installation_name": "mysql",
+          "properties": [
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "7ce16b5a685f7167",
+                "password": "fakepassword"
+              },
+              "identifier": "vm_credentials"
+            },
+            {
+              "value": {
+                "identity": "root",
+                "password": "fakepassword"
+              },
+              "identifier": "mysql_admin_credentials"
+            },
+            {
+              "value": {
+                "identity": "app_usage",
+                "password": "fakepassword"
+              },
+              "identifier": "app_usage_credentials"
+            },
+            {
+              "value": {
+                "identity": "a7433b5e8b138e6e79ca",
+                "password": "fakepassword"
+              },
+              "identifier": "notifications_credentials"
+            },
+            {
+              "value": {
+                "identity": "cc20d1615cdde95b1a3e",
+                "password": "fakepassword"
+              },
+              "identifier": "autoscale_credentials"
+            },
+            {
+              "value": {
+                "identity": "cb29203409dda5066deb",
+                "password": "fakepassword"
+              },
+              "identifier": "ccdb_credentials"
+            },
+            {
+              "value": {
+                "identity": "d51409f87263ca6e5747",
+                "password": "fakepassword"
+              },
+              "identifier": "uaadb_credentials"
+            },
+            {
+              "value": {
+                "identity": "d70c80ff68b72b097318",
+                "password": "fakepassword"
+              },
+              "identifier": "consoledb_credentials"
+            }
+          ],
+          "instances": [
+            {
+              "value": 1,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 8192,
+              "identifier": "ram"
+            },
+            {
+              "value": 30000,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 100000,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 2,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "mysql-07d1c9e61727a8be2693",
+              "installation_name": "mysql-partition-cac94a070a81fd8f3931",
+              "instance_count": 1,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "mysql"
+        },
+        {
+          "guid": "ccdb-5ddd892ab08686f0eee5",
+          "installation_name": "ccdb",
+          "properties": [
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "84b0d3864db40d40",
+                "password": "fakepassword"
+              },
+              "identifier": "vm_credentials"
+            },
+            {
+              "value": {
+                "identity": "admin",
+                "password": "fakepassword"
+              },
+              "identifier": "credentials"
+            }
+          ],
+          "instances": [
+            {
+              "value": 0,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 1024,
+              "identifier": "ram"
+            },
+            {
+              "value": 2048,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 2048,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 1,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "ccdb-5ddd892ab08686f0eee5",
+              "installation_name": "ccdb-partition-cac94a070a81fd8f3931",
+              "instance_count": 0,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "ccdb"
+        },
+        {
+          "guid": "uaadb-8204356e727865bdd295",
+          "installation_name": "uaadb",
+          "properties": [
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "4e245f6d4336cf66",
+                "password": "fakepassword"
+              },
+              "identifier": "vm_credentials"
+            },
+            {
+              "value": {
+                "identity": "root",
+                "password": "fakepassword"
+              },
+              "identifier": "credentials"
+            }
+          ],
+          "instances": [
+            {
+              "value": 0,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 1024,
+              "identifier": "ram"
+            },
+            {
+              "value": 2048,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 8192,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 1,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "uaadb-8204356e727865bdd295",
+              "installation_name": "uaadb-partition-cac94a070a81fd8f3931",
+              "instance_count": 0,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "uaadb"
+        },
+        {
+          "guid": "consoledb-ffe27af00f2b2e13fee2",
+          "installation_name": "consoledb",
+          "properties": [
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "3d1327c096f014b8",
+                "password": "fakepassword"
+              },
+              "identifier": "vm_credentials"
+            },
+            {
+              "value": {
+                "identity": "root",
+                "password": "fakepassword"
+              },
+              "identifier": "credentials"
+            }
+          ],
+          "instances": [
+            {
+              "value": 0,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 1024,
+              "identifier": "ram"
+            },
+            {
+              "value": 2048,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 1024,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 1,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "consoledb-ffe27af00f2b2e13fee2",
+              "installation_name": "consoledb-partition-cac94a070a81fd8f3931",
+              "instance_count": 0,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "consoledb"
+        },
+        {
+          "guid": "cloud_controller-ede354c9430432fa6d99",
+          "installation_name": "cloud_controller",
+          "properties": [
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "cdfb90897ee5c9ad",
+                "password": "fakepassword"
+              },
+              "identifier": "vm_credentials"
+            },
+            {
+              "value": {
+                "identity": "staging_upload_user",
+                "password": "fakepassword"
+              },
+              "identifier": "staging_upload_credentials"
+            },
+            {
+              "value": {
+                "identity": "bulk_api",
+                "password": "fakepassword"
+              },
+              "identifier": "bulk_api_credentials"
+            },
+            {
+              "value": {
+                "identity": "db_encryption",
+                "password": "fakepassword"
+              },
+              "identifier": "db_encryption_credentials"
+            },
+            {
+              "identifier": "encrypt_key"
+            },
+            {
+              "value": 1024,
+              "identifier": "max_file_size"
+            },
+            {
+              "value": false,
+              "identifier": "disable_custom_buildpacks"
+            },
+            {
+              "value": "run.vsphere.starkandwayne.com",
+              "identifier": "system_domain"
+            },
+            {
+              "value": "apps.vsphere.starkandwayne.com",
+              "identifier": "apps_domain"
+            },
+            {
+              "value": 10240,
+              "identifier": "default_quota_memory_limit_mb"
+            },
+            {
+              "value": 100,
+              "identifier": "default_quota_max_number_services"
+            },
+            {
+              "value": true,
+              "identifier": "default_to_diego_backend"
+            },
+            {
+              "value": true,
+              "identifier": "allow_app_ssh_access"
+            }
+          ],
+          "instances": [
+            {
+              "value": 1,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 4096,
+              "identifier": "ram"
+            },
+            {
+              "value": 20480,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 0,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 1,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "cloud_controller-ede354c9430432fa6d99",
+              "installation_name": "cloud_controller-partition-cac94a070a81fd8f3931",
+              "instance_count": 1,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "cloud_controller"
+        },
+        {
+          "guid": "ha_proxy-2cd24981e30f5cd2db79",
+          "installation_name": "ha_proxy",
+          "properties": [
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "62358b3d7f730f00",
+                "password": "fakepassword"
+              },
+              "identifier": "vm_credentials"
+            },
+            {
+              "value": "10.58.111.76",
+              "identifier": "static_ips"
+            },
+            {
+              "value": {
+                "private_key_pem": "-----BEGIN RSA PRIVATE KEY-----\r\nMIIEpQIBAAKCAQEAyeY0DJ+wry5b+GQm77xcOm+6fYNYrkt3snVynrmXYMVdZyS9\r\nDiNJu4nfzZq6VDKmqjnvVFxAHYduwWWw3wO4+fak8LF/pA9CEAaDf8kymSPmSO81\r\nr1+Z5zfrI5d2lP9NCNyyEny6d+7TJR3TsVU/90KIxboqv1thCS9jKpGGD+WLIqbY\r\nYsr0vnTEFhxcJpID8oAvVxtQ6xumvn3BB1hpw9vZy4Mzu1qNaphm1L1d84MstgdK\r\nH41ugVdkXUa6VsrQ5nkHtIjZDt4PKkd6yERu+nk8VT6BwJjAkz9VSUicZ1tpwIG6\r\nfgsrL6cJTBvY9O5yHKsaHmhKFghsYRZPg0jrhQIDAQABAoIBAEjOU7ytpVg2voGf\r\nFA9lfFiyS6zRPZx0qHBZPAES6gzCf0EflXFQtlkDigopnsGYFlPSWoSwU4qSeRUS\r\np6p0PDMfhzEowN+XhPokby0Yj797m6J3aIOaVPR1TLzj9KYcPlpQw4I5KkDvhYKf\r\n8+PB2zQ98PZkgN/Kgv598SO7oH2AZCk7EDHNDmsYs3sdRPte+D3XMR07tHFOK7r+\r\nTxAV+54af0xzmt5hs4+tXVuoQIav8iinD4KyCsrLSccZlvCQJJKFcZu2xlBS04jd\r\nXQMwPoxpo9PgcBiETQ7roagWpg3uJsUPRXzx7Lo2z8NS2bmXC9I9F4e72hhm5S40\r\nbpP+qgECgYEA5D1eXEnn/wrxwcVpaJrmJpspPvHEFz0h7o0F0qHIWdjw+flgjWv7\r\nWdEVlrwamK1N4qfk+dewB6ZvSymZsG3lbIhPd5TYjQqeLZnv85y2LqzUtwiC7HmW\r\nnI5iqKOg9FWm8yWF7idfBUQ+9BrYxMW/hjTwoGGgTMumTCGFfOnrwoECgYEA4nSt\r\nyK7g/GTYodg8UJlaY18Ue7oubGsDqcYOC3dkaUL42r20528dfk5V5tgGeuOxquO7\r\n5zW/SyMSFAqeFDAeG8uDrPJlBd2Q2qrAjzZq7gvjdC3Y0d+yQctr77D4q3md98SA\r\n3gDzsDFHrDnS4JMMgLdlRWXIZF46a1Nye9PgnwUCgYEAtDNbr+POHohmjcWuTp+V\r\nvL9elkrNtkdW5gBDq6R+CaoFwGdK+v1ZavVwZR1IpmiWCLDkUPohCjk2v5ItvKVX\r\nsRQCIfjL7LeIYZqbX6zIDhv4qjY3IDtzVVH5xQnDx4Vkla53iqtdE0xpo9MaeGlk\r\nqLJdlVLe/CMBvjPtL82EjYECgYEAmfKqRdilONAx+WywLDbknNOBcE90yd3CYsMy\r\nvxbOW0TdOo9nEUKXsUr92O4ZEagDG2KwVhFS13ijDJ7fMmg3v7uN65/pj6A9nnog\r\nZ/udm/DXEx8r3BmP7GynFw6fLquB+XNMDCBniesmh23T7znocQS8Qv5byefJHTdg\r\nh8/VTyUCgYEAnA9CVV1nIopySWG9vr+b2S4lpmgrGt0DERbQKQLrckVCTfJHHOvb\r\naeJUfX9v065Zb1C4fubqgTh9f6NboVb9o/hVpXHYiDWEIZ1GmO8KNcYEq67Ma5oO\r\nBkc05Jh9eUFlJBUisGKJ64C/zVA9mSZpr0izrqSfmFjgJW6YziUsYSI=\r\n-----END RSA PRIVATE KEY-----",
+                "cert_pem": "-----BEGIN CERTIFICATE-----\r\nMIIDazCCAlOgAwIBAgIVAM7lLifvcLWfFQxxQxMrRYZjQIHZMA0GCSqGSIb3DQEB\r\nBQUAMB8xCzAJBgNVBAYTAlVTMRAwDgYDVQQKDAdQaXZvdGFsMB4XDTE2MDEyNTA3\r\nMTcwMVoXDTE4MDEyNDA3MTcwMVowRTELMAkGA1UEBhMCVVMxEDAOBgNVBAoMB1Bp\r\ndm90YWwxJDAiBgNVBAMMGyoudnNwaGVyZS5zdGFya2FuZHdheW5lLmNvbTCCASIw\r\nDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMnmNAyfsK8uW/hkJu+8XDpvun2D\r\nWK5Ld7J1cp65l2DFXWckvQ4jSbuJ382aulQypqo571RcQB2HbsFlsN8DuPn2pPCx\r\nf6QPQhAGg3/JMpkj5kjvNa9fmec36yOXdpT/TQjcshJ8unfu0yUd07FVP/dCiMW6\r\nKr9bYQkvYyqRhg/liyKm2GLK9L50xBYcXCaSA/KAL1cbUOsbpr59wQdYacPb2cuD\r\nM7tajWqYZtS9XfODLLYHSh+NboFXZF1GulbK0OZ5B7SI2Q7eDypHeshEbvp5PFU+\r\ngcCYwJM/VUlInGdbacCBun4LKy+nCUwb2PTuchyrGh5oShYIbGEWT4NI64UCAwEA\r\nAaN4MHYwDgYDVR0PAQH/BAQDAgeAMB0GA1UdDgQWBBRtcFEkZIy+rqCFB4KeUyiA\r\nJsNstjAdBgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwEwJgYDVR0RBB8wHYIb\r\nKi52c3BoZXJlLnN0YXJrYW5kd2F5bmUuY29tMA0GCSqGSIb3DQEBBQUAA4IBAQC9\r\nDUGCZXSUZiS6/XWeMZ0bCfqbL7qwEYDc57VcOXker2Zrayfi3E22NhZjsr5xA9tS\r\nOwg6epsoQHL3ZGcz1wUvAbjYCmMUGd2m0++wVrwSrxmMHNJNXNqqCZ6QA5b15FIn\r\np1wrJy/ykDGKh9vC0LqSyDGFUIlE5y3ff8bW2YXjM7ZUtfk+at9sa6tpuv9jENce\r\nHAdyanhXYZmImp1MWIWHrFc6Gcqd9AfHkdDic/+xR20LhyjECacGCLcZR9bH5OOY\r\nrg7cCZ5LA8tEqcNv30G0Rinu2hljyPBGGlfyegbbLkBxRk/HtpMTgcoUFziIIc8/\r\np7eX4bGp62r4oSAUoh0G\r\n-----END CERTIFICATE-----"
+              },
+              "identifier": "ssl_rsa_certificate"
+            },
+            {
+              "value": true,
+              "identifier": "skip_cert_verify"
+            },
+            {
+              "value": false,
+              "identifier": "disable_http"
+            },
+            {
+              "identifier": "ssl_ciphers"
+            }
+          ],
+          "instances": [
+            {
+              "value": 1,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 1024,
+              "identifier": "ram"
+            },
+            {
+              "value": 2048,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 0,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 1,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "ha_proxy-2cd24981e30f5cd2db79",
+              "installation_name": "ha_proxy-partition-cac94a070a81fd8f3931",
+              "instance_count": 1,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "ha_proxy"
+        },
+        {
+          "guid": "health_manager-cadb9cec01e9dc558ffb",
+          "installation_name": "health_manager",
+          "properties": [
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "7df107482675f70a",
+                "password": "fakepassword"
+              },
+              "identifier": "vm_credentials"
+            },
+            {
+              "value": {
+                "identity": "f5321cf968f8d8f46341",
+                "password": "fakepassword"
+              },
+              "identifier": "internal_api_user_credentials"
+            }
+          ],
+          "instances": [
+            {
+              "value": 0,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 1024,
+              "identifier": "ram"
+            },
+            {
+              "value": 2048,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 0,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 1,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "health_manager-cadb9cec01e9dc558ffb",
+              "installation_name": "health_manager-partition-cac94a070a81fd8f3931",
+              "instance_count": 0,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "health_manager"
+        },
+        {
+          "guid": "clock_global-a46095096ec1ff12fbbe",
+          "installation_name": "clock_global",
+          "properties": [
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "25f516018c8ea000",
+                "password": "fakepassword"
+              },
+              "identifier": "vm_credentials"
+            }
+          ],
+          "instances": [
+            {
+              "value": 1,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 1024,
+              "identifier": "ram"
+            },
+            {
+              "value": 2048,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 0,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 1,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "clock_global-a46095096ec1ff12fbbe",
+              "installation_name": "clock_global-partition-cac94a070a81fd8f3931",
+              "instance_count": 1,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "clock_global"
+        },
+        {
+          "guid": "cloud_controller_worker-51ec3b1b17e261a07a65",
+          "installation_name": "cloud_controller_worker",
+          "properties": [
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "1d8bd25f0726d436",
+                "password": "fakepassword"
+              },
+              "identifier": "vm_credentials"
+            }
+          ],
+          "instances": [
+            {
+              "value": 1,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 1024,
+              "identifier": "ram"
+            },
+            {
+              "value": 2048,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 0,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 1,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "cloud_controller_worker-51ec3b1b17e261a07a65",
+              "installation_name": "cloud_controller_worker-partition-cac94a070a81fd8f3931",
+              "instance_count": 1,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "cloud_controller_worker"
+        },
+        {
+          "guid": "collector-3e79b8cfa25b90cecbd3",
+          "installation_name": "collector",
+          "properties": [
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "5cf63aa3d083065f",
+                "password": "fakepassword"
+              },
+              "identifier": "vm_credentials"
+            }
+          ],
+          "instances": [
+            {
+              "value": 0,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 1024,
+              "identifier": "ram"
+            },
+            {
+              "value": 2048,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 0,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 1,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "collector-3e79b8cfa25b90cecbd3",
+              "installation_name": "collector-partition-cac94a070a81fd8f3931",
+              "instance_count": 0,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "collector"
+        },
+        {
+          "guid": "uaa-4e1733c0b2ec09bec5ab",
+          "installation_name": "uaa",
+          "properties": [
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "c55eaee9afb8cee0",
+                "password": "fakepassword"
+              },
+              "identifier": "vm_credentials"
+            },
+            {
+              "value": {
+                "identity": "admin",
+                "password": "fakepassword"
+              },
+              "identifier": "admin_credentials"
+            },
+            {
+              "value": {
+                "identity": "push_apps_manager",
+                "password": "fakepassword"
+              },
+              "identifier": "push_apps_manager_credentials"
+            },
+            {
+              "value": {
+                "identity": "smoke_tests",
+                "password": "fakepassword"
+              },
+              "identifier": "run_smoke_tests_credentials"
+            },
+            {
+              "value": {
+                "identity": "system_services",
+                "password": "fakepassword"
+              },
+              "identifier": "system_services_credentials"
+            },
+            {
+              "value": {
+                "identity": "system_verification",
+                "password": "fakepassword"
+              },
+              "identifier": "system_verification_credentials"
+            },
+            {
+              "value": {
+                "identity": "system_passwords",
+                "password": "fakepassword"
+              },
+              "identifier": "system_passwords_client_credentials"
+            },
+            {
+              "value": {
+                "identity": "login",
+                "password": "fakepassword"
+              },
+              "identifier": "login_client_credentials"
+            },
+            {
+              "value": {
+                "identity": "identity",
+                "password": "fakepassword"
+              },
+              "identifier": "identity_client_credentials"
+            },
+            {
+              "value": {
+                "identity": "gorouter",
+                "password": "fakepassword"
+              },
+              "identifier": "gorouter_client_credentials"
+            },
+            {
+              "value": {
+                "identity": "doppler",
+                "password": "fakepassword"
+              },
+              "identifier": "doppler_client_credentials"
+            },
+            {
+              "value": {
+                "identity": "opentsdb-firehose-nozzle",
+                "password": "fakepassword"
+              },
+              "identifier": "opentsdb_nozzle_credentials"
+            },
+            {
+              "value": {
+                "identity": "portal",
+                "password": "fakepassword"
+              },
+              "identifier": "apps_manager_client_credentials"
+            },
+            {
+              "value": {
+                "identity": "autoscaling_service",
+                "password": "fakepassword"
+              },
+              "identifier": "autoscale_client_credentials"
+            },
+            {
+              "value": {
+                "identity": "cc-service-dashboards",
+                "password": "fakepassword"
+              },
+              "identifier": "cc_service_dashboards_credentials"
+            },
+            {
+              "value": {
+                "identity": "cloud_controller",
+                "password": "fakepassword"
+              },
+              "identifier": "cc_client_credentials"
+            },
+            {
+              "value": {
+                "identity": "admin",
+                "password": "fakepassword"
+              },
+              "identifier": "admin_client_credentials"
+            },
+            {
+              "value": {
+                "private_key_pem": "-----BEGIN RSA PRIVATE KEY-----\nMIIEowIBAAKCAQEA3I+SzJv3yPAytdzOKYNlyCOtc/RPWxgrmQxfpVPoPQBlaCEp\nQXYjTzyUy4BRmNKt2y8FFPu7sdsBvH+qxux+xZkc0tKknQEqfQaCzQiw+5hQNQeC\n885NsOXwyITQiyBSOzeJPABXzWSZoop37aOe0R7pHad40EmPcjjqUo8vZvKPePCU\nUOOZdVKhYlthAkODSevkZPJ0U1iOVqZaL5L7s3p7GGmz1XKjjcIQ29/Tbs0NvcKr\nEcYCHnAr+DFK64NoUd0V24c289RjGJ/M2KoAoXgif0l1QP4IIFfeE+7y81f0XVLY\nT9Pg5Op1NlFF1uROzPDKj7zVNom0vSUcbBNk5wIDAQABAoIBAAchoUZ6WIWntowI\nyqWu+PCCrs4L/TDd1DMLomAPGXg3dg/q2pGiRzv9onX9/SVq0nI+z/RAu23hvemh\nWx05clPjQnpSkz38VqpaNop4mHhaEWXVi1dkuUBZ/vIM0U1eSypc/lPxUuVyNkF6\nJqyJWM48KJ9r1c0uQ7QWwQTQWmECsV/KsOMGnLbIqWKIBgS6Nidyxmt+GUdtbQSh\nRMDsVGFg6vczg3Ebi+LuOeEggV7cGi1h2iTVE+QzLoYn0fZmkXsD2k1aUYKPaNKG\nJjKva49t8esAXsXg94TKsOOiae0kRHlSIvnpFZqesvx6bavm7TPCJDrBxrPD+9pD\nLuQd49ECgYEA8+3GYeeE2XYu7vM3khKU94P/Fat4E4vTmNtLlE/5IkWimuwec6Gd\nBQnN6p28LEbnmO9S3y+8CDnqHGAs1kKS9Qgfkg5PFLD3bN5jGoDy9z7m0dkgJQo+\nlb6xJ3AK9ZErujstBITgA7aYpzjf+PF6bYybXe+5KICgALVWzaGu688CgYEA53nC\nlE2k2io5TUqa+6qrqSvmDtfcJG5Gcggvt7cedsLb0iT8xCy1PgzR3KAxH66LU4ZO\n/i3C2fb/wGvhKheo0seV+JoKe8wdbdbP/+x69q1o7AT2uHG8QfcR6XZtxKfbkkE+\nUPKxPA3I2gy8Tm1BJ1wzHYFyxBUmhIWRCaZqw2kCgYBRonjrGR133bqVU6Z8Z2Wd\ndHpxGSKlf/0/wdyIdT9OffmOWYlTb3nqTr6wTzvDobMulqGoegQ2yJMWDgXTaxJd\nmOtf6RQEO7mCoOaP3ynxHwcGoeDFJKmPWfNV3IR+bKgyuk01nvaNp5VtGXazjLVJ\nZm40wN65tFpYAlhbl0nANwKBgFkls6KaJJtBF8CEsxupp2MH3RpqWAZP0iGotXfz\ntm/WrAJK7G5BKaw0E778ku64skAAwftydFCtp+HbqmQjqIlFBKUx7kevXMYorQLL\neK/4KSh84Og4JWDiXqujSLMsUowJRI64aTnPtUMFFKC/ww/9mlIKwMBzxNnU9v7Y\ncNXBAoGBAMmOCEklehffskCrboopxa12XWViHZkhyjYAUawqN3Nj8kCC3UoKLeHI\nQiYxzdVd8r6Lim17Kx3cl3bVkTSCkeOy9ceSt/SuQz0N6lagcM6xqba+a2nBI1t2\nftRj5m891HYtRSKDUIMc9/9r1GiddoabEjpnck+Jz7akyCtuCXFF\n-----END RSA PRIVATE KEY-----\n"
+              },
+              "identifier": "jwt_signing_key_credentials"
+            },
+            {
+              "value": {
+                "identity": "notifications",
+                "password": "fakepassword"
+              },
+              "identifier": "notifications_client_credentials"
+            },
+            {
+              "value": {
+                "identity": "notifications_template",
+                "password": "fakepassword"
+              },
+              "identifier": "notifications_template_client_credentials"
+            },
+            {
+              "value": {
+                "identity": "ssh_proxy",
+                "password": "fakepassword"
+              },
+              "identifier": "ssh_proxy_client_credentials"
+            },
+            {
+              "value": {
+                "identity": "notifications_ui_client",
+                "password": "fakepassword"
+              },
+              "identifier": "notifications_ui_client_credentials"
+            },
+            {
+              "value": {
+                "identity": "cloud_controller_username_lookup",
+                "password": "fakepassword"
+              },
+              "identifier": "cloud_controller_username_lookup_credentials"
+            },
+            {
+              "value": {
+                "identity": "cc_routing",
+                "password": "fakepassword"
+              },
+              "identifier": "cc_routing_credentials"
+            },
+            {
+              "value": {
+                "identity": "apps_metrics",
+                "password": "fakepassword"
+              },
+              "identifier": "apps_metrics_credentials"
+            },
+            {
+              "value": {
+                "identity": "apps_metrics_processing",
+                "password": "fakepassword"
+              },
+              "identifier": "apps_metrics_processing_credentials"
+            },
+            {
+              "identifier": "ldap_url"
+            },
+            {
+              "identifier": "credentials"
+            },
+            {
+              "identifier": "ldap_search_base"
+            },
+            {
+              "value": "cn={0}",
+              "identifier": "ldap_search_filter"
+            },
+            {
+              "identifier": "ldap_server_ssl_cert"
+            },
+            {
+              "identifier": "ldap_server_ssl_cert_alias"
+            },
+            {
+              "value": "mail",
+              "identifier": "ldap_mail_attribute_name"
+            },
+            {
+              "value": {
+                "private_key_pem": "-----BEGIN RSA PRIVATE KEY-----\nMIIEowIBAAKCAQEAwoMJ8+6euocc3Yr9urPiTNe5uAykew496F+EHyvGDikdmRL4\nypDG5MsijxQQObruu4LTj9SewWiDgmU9GGZ67Yjn54I2Tl0oyNDECBhc5Ns/65B8\np6oRIyQjE/Zn9QFR+He/Re9tclV8lwMSC5ufA82NOiTB/pvt7JKmanNskSgkZMqv\ngkPA9TIrCybzp3UrtkcoaFu9gMfzhA95THdQHVS1jtUiNmLXASLweX6oXs1kLdMM\n1EZcLySJMb08vVyoTjNueHqZhTdgp2OBayZKgnJZlt/0IqmomHGCVuIEO9wpoSdz\nbpRgYqB62AJiOmhia3MCamCM/SKddVTcpi/VdwIDAQABAoIBABtYzQdsnwhegqJr\nLi0XqVNgaQ4FSQK8B9wpwauYPeozwaOJ1Uy1eiEkpiEzkuxq6bGXPSNVo1RR21tz\n3FkX32SSAPi9h+EQm/FP2J/CvRy37o6x67Su5mXoaL4fwJHjs6CZRV0RwnN2rWOV\n3O2g3YRtW9O240dmqNa/74G75KGroinj1pWR2GCphy30B8TpXBo3uDAGk6AlEah/\nZp0nKqD3lqSjGID0YdgTGsZriqWTx2CjHT+Rlncr0wZOUKpLAe2uaYfk10k18w0e\nFRYhXelMCb70JPt5AukzAr9WYmX0Arx/waR2RA3Ny03S98M6JCvgE6talKNzsFWr\nf39a+jECgYEA8spQo3XqjHSz4NYpBQ6WyRq+nGt5ESPmcBB4xejtPpJpPsjekdE/\n1Tqd98Avcfwh3d1ASQJoHKeXnsuG0NVSJl12x5eyA6aYrVKXVNRpX117m4djoQ5W\nMsgylnqzayzH9GEE+1/VG+57n9pZNHAn0VbgmDsA8lyz5KLa+pjEmGsCgYEAzRhI\nIljooGZvSn/O0YJVGuGqJ2rjWYwJ3G1kKK06ZABT/1orUlMbtJRQxR1gvf6xKoFn\nUHFEtsGqhxiolgKAFR6uj0DZgDJhrhQHoDgX/iFMO2S6uo6TL4O7OkGd9nVsUa/e\nD7IQGpv9e5eFIIEESuXjY7MPzyMeUlFXdEhc6iUCgYEAhAO0Ex2DunmecUuhpElJ\nffIX4M+jVcmSfC7IrLw5fAN6TJRGST1hGx0zVcpfQfhZpdyvHsO7PpF2JPb/yD+l\n2oyJkH+QYOHONLgq5wpUfXFES84zQxibkCNBNodjVYxU8TFr1w9FvllPSR0d0iCF\n1hMKLlwu6Jm1i0VuEkLM6x8CgYBEEZYHSEjUy4qOSELlCAOk61akxHX2R2MSdH/0\nfCHQBMfcDRoptYmRclQoR6rPBBPazp3yddVfboFhWw7A0s2dtNQsmVJWmOIQe3dY\ndqWH45dAcxsCRcWV1Hu0RwjdPnWX2u2xeeCcZD9J4Kz/b7J0BT5l3Y0Wq0op+fMz\nlby4vQKBgCbKIr3KU4qgVqsxkG6nW4DPEfCE8ZQRj3exUgVcrM46OpQTI3/CL4Il\nwMVe3yEGLt/iRpkxlo384WcfiPfRAFETe3zw+AnS+zai2UqTPTFnRwFW/2p1aKh9\nnbiOJzaEqORn7dnXarOoP3Q67PRRoybKmo5SCECzbt89RpWemmcY\n-----END RSA PRIVATE KEY-----\n",
+                "cert_pem": "-----BEGIN CERTIFICATE-----\nMIIDSDCCAjCgAwIBAgIVAL9+edxnfNWGNejq+ujVLNcZVTWKMA0GCSqGSIb3DQEB\nBQUAMB8xCzAJBgNVBAYTAlVTMRAwDgYDVQQKDAdQaXZvdGFsMB4XDTE2MDEyNTA3\nMzMwMVoXDTE4MDEyNDA3MzMwMVowSjELMAkGA1UEBhMCVVMxEDAOBgNVBAoMB1Bp\ndm90YWwxKTAnBgNVBAMMIHNlcnZpY2VfcHJvdmlkZXJfa2V5X2NyZWRlbnRpYWxz\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwoMJ8+6euocc3Yr9urPi\nTNe5uAykew496F+EHyvGDikdmRL4ypDG5MsijxQQObruu4LTj9SewWiDgmU9GGZ6\n7Yjn54I2Tl0oyNDECBhc5Ns/65B8p6oRIyQjE/Zn9QFR+He/Re9tclV8lwMSC5uf\nA82NOiTB/pvt7JKmanNskSgkZMqvgkPA9TIrCybzp3UrtkcoaFu9gMfzhA95THdQ\nHVS1jtUiNmLXASLweX6oXs1kLdMM1EZcLySJMb08vVyoTjNueHqZhTdgp2OBayZK\ngnJZlt/0IqmomHGCVuIEO9wpoSdzbpRgYqB62AJiOmhia3MCamCM/SKddVTcpi/V\ndwIDAQABo1AwTjAOBgNVHQ8BAf8EBAMCB4AwHQYDVR0OBBYEFCHDqQ2apKXZsNd/\n0XHkh7yqNeUeMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDATANBgkqhkiG\n9w0BAQUFAAOCAQEAqDgBtdK46eGUivKcgmWhw4bCjA1FAQp3ADnr3nl8iB8/wHzf\nvghdRD6JtYzAsmyg6sPfQTwLAZC+MeIi1z/nbVqyc/MQmhUZDVETlsILQilAYUxL\n0Q94yMle4upQ0tHzvDTSeREZRXokHqy4v8oq2L8+V3XGpLIlpBgGZoaMaYRkECKO\n+JBI30YdEW1wP4bdPNN1T7cZW2En7YLgw/5BECO6l+quMDnYK2nIcGNxtGHb96Ua\n1yPTXW+pEAM8zspdpgjMWJbbn3qu/t3IyJfnIceNd/Lax4hdUrjDtxp/7NRSmPOY\n6X2YZgeLBtRLbdR9hpB5POcxSdee4XGC1Qt8zw==\n-----END CERTIFICATE-----\n"
+              },
+              "identifier": "service_provider_key_credentials"
+            },
+            {
+              "identifier": "sso_url"
+            },
+            {
+              "identifier": "sso_xml"
+            },
+            {
+              "identifier": "sso_name"
+            }
+          ],
+          "instances": [
+            {
+              "value": 1,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 1024,
+              "identifier": "ram"
+            },
+            {
+              "value": 2048,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 0,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 1,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "uaa-4e1733c0b2ec09bec5ab",
+              "installation_name": "uaa-partition-cac94a070a81fd8f3931",
+              "instance_count": 1,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "uaa"
+        },
+        {
+          "guid": "diego_brain-ed53bf49fc5a7dfb62e4",
+          "installation_name": "diego_brain",
+          "properties": [
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "c1598f592cf71e62",
+                "password": "fakepassword"
+              },
+              "identifier": "vm_credentials"
+            },
+            {
+              "value": {
+                "private_key_pem": "-----BEGIN RSA PRIVATE KEY-----\nMIIEowIBAAKCAQEAsO6/K04wg9JsS2NhbCUrxBbB/byJ88pPZGt8kaXK5oAq3ZdJ\nx9VhArcwjUqp2fpXrlILCdgdPBNb53Lk6pyXWyES0M+vD6IqsxNI+JpFs/Moaf9n\nbIhdzNwSU0LgkhylTM3NYs/KviQBvIXzobsFsGZTFRk0dTKY2dRcgU/OTSy3CIfE\nSZb+b/CXeSHBGpT+Ddl4TbaTw+o6y9JQ4utuNBX6QjNmsEo0JYIGsvUBb4z8q73U\nIb3J9JvbnV9uub8CMp6aElb7zCfjdNxGjBHumrwSVuR++GViJ38kaUwqlWJX1w3Z\nk51fzPNW5z+zZHWyGCLXSjp1f2rmih6odRQduQIDAQABAoIBABGkjO19i3rplaDi\n1Qkan8Wa21c44KytpMMHsNE5LgVUDHIyLso9bcH+kFnWcx9oRiv8xFsD8M5Xw9dN\nbqQyXylYH+8wdm1hp05aAvG/OGocOhBvxlldM7VE0JL63TfUoWsKLovG2pmhL4cj\n+EpNQuD3Ixu8eq2hEPrPoTXHxnONcmRMtYOo3VS6ZegLI8WSgQ5ymHcfhD05PcA3\naTzWlOkLx1XqSOLsBFkGCMYg6wcF32gTvFPzklatcKMGm7LBeRXCgaLRXcRyRvvq\nDcRgt8NnfFYSe5YhQq2P9vnuL7DYCUXOf87S68aH9/Z29E7/tRPgTo3C1RTJRF0d\n7HHohIECgYEA4QRsux69RB5hO/hWhmrJFL/OjQ8rKeuyYjt5QUSjcuzj7HdkJT7Q\nWO0osIMwqdMbu0kSc3uvGPL9olsC+eVcy3xHVq4woon96zjpkhCD3lm/v0SaSmIL\n/n4uhvGb17kqzEbGKwlzvSVuWqw6xXxrPGggjt2nXvPZKij4K8GN2nECgYEAyUtl\n014TKCNsi92EIuFhLXgM65GX71HLYAIuJeX54QvcDX2m/iyIu1TGK0j3u2OG5tFe\nYqilk7vbwNIygx0fWblznAdO3tkZL7xbn+ZIwn1DoXmtIeCg44f9+gn+/8+TFukY\nfhu+HosC1Ln8AbDiObCU2p4dOHwK+PdUuq48y8kCgYBy4EFqXk0d46ycYzI5OXci\n4rFejmno4u2U/OvwiEwxtgK+jE1SPnk7jQgC5VcIvEAiIzIKRxCjWhpmsrQYRCJV\nuELrW850jKJXXhzQdyH7eDJOQYXLh7a73EuAlQSM43mYBGHTQuYVoHBwVhFDFTvi\nAP7uMPbroO4zeesI263B4QKBgBcuKpSzoaseoTJeGQhXQfSVfY9nHcL+fVgaCCxv\nFl53GiknjiJ5CGniMkvrxDN9G5zbAW6FE0Q2/vBuhEibAvA3LfwKz2dUQtU/cKGy\nSDC1ciNXOrvK/VwWXgX8PrRAuCSMRTjIgxVLVtEedcnQD80q64ldaeoGRtEy0jwJ\nMpEZAoGBALtoAFIrzc9b9+lSP4srYOj7wRyTKaSLQ8skydznCjyLsIitStC1UntN\nEhGnMZlQNHtr0xJkaVq+DWvdocwGfLGCmDZSJfQ5Nt+nG9wz6dUhWU3QKpYQVq/d\nc5ltmWVj5Y/XdTr4O7wJtinXuwRMyXyZjNtlO1hnq6IkHoaqOEKL\n-----END RSA PRIVATE KEY-----\n"
+              },
+              "identifier": "ssh_host_key"
+            }
+          ],
+          "instances": [
+            {
+              "value": 1,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 2048,
+              "identifier": "ram"
+            },
+            {
+              "value": 4096,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 1024,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 1,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "diego_brain-ed53bf49fc5a7dfb62e4",
+              "installation_name": "diego_brain-partition-cac94a070a81fd8f3931",
+              "instance_count": 1,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "diego_brain"
+        },
+        {
+          "guid": "diego_cell-c9b4087db45fbc6e0e60",
+          "installation_name": "diego_cell",
+          "properties": [
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "7c0aa52f785fb29d",
+                "password": "fakepassword"
+              },
+              "identifier": "vm_credentials"
+            },
+            {
+              "value": "10.254.0.0/22",
+              "identifier": "garden_network_pool"
+            }
+          ],
+          "instances": [
+            {
+              "value": 3,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 16384,
+              "identifier": "ram"
+            },
+            {
+              "value": 65536,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 0,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 2,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "diego_cell-c9b4087db45fbc6e0e60",
+              "installation_name": "diego_cell-partition-cac94a070a81fd8f3931",
+              "instance_count": 3,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "diego_cell"
+        },
+        {
+          "guid": "dea-4abbe1ee776d8b0722c7",
+          "installation_name": "dea",
+          "properties": [
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "ef8bcf0382a2a0c4",
+                "password": "fakepassword"
+              },
+              "identifier": "vm_credentials"
+            },
+            {
+              "value": {
+                "identity": "ddbbef1d148468050044",
+                "password": "fakepassword"
+              },
+              "identifier": "loggregator_agent_status_credentials"
+            }
+          ],
+          "instances": [
+            {
+              "value": 0,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 16384,
+              "identifier": "ram"
+            },
+            {
+              "value": 32768,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 0,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 2,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "dea-4abbe1ee776d8b0722c7",
+              "installation_name": "dea-partition-cac94a070a81fd8f3931",
+              "instance_count": 0,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "dea"
+        },
+        {
+          "guid": "doppler-4bb7a54738cb8c25010d",
+          "installation_name": "doppler",
+          "properties": [
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "5de1c74c0938b127",
+                "password": "fakepassword"
+              },
+              "identifier": "vm_credentials"
+            },
+            {
+              "value": {
+                "identity": "d007256ce1fb993535f2",
+                "password": "fakepassword"
+              },
+              "identifier": "status_credentials"
+            },
+            {
+              "value": {
+                "identity": "c17758a4862605115d84",
+                "password": "fakepassword"
+              },
+              "identifier": "shared_secret_credentials"
+            },
+            {
+              "value": 100,
+              "identifier": "message_drain_buffer_size"
+            }
+          ],
+          "instances": [
+            {
+              "value": 1,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 1024,
+              "identifier": "ram"
+            },
+            {
+              "value": 2048,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 0,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 1,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "doppler-4bb7a54738cb8c25010d",
+              "installation_name": "doppler-partition-cac94a070a81fd8f3931",
+              "instance_count": 1,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "doppler"
+        },
+        {
+          "guid": "loggregator_trafficcontroller-3a1b71ecfed752b45174",
+          "installation_name": "loggregator_trafficcontroller",
+          "properties": [
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "807f30c24a23c3fa",
+                "password": "fakepassword"
+              },
+              "identifier": "vm_credentials"
+            },
+            {
+              "value": {
+                "identity": "c3d305071f0aa32d0a96",
+                "password": "fakepassword"
+              },
+              "identifier": "status_credentials"
+            }
+          ],
+          "instances": [
+            {
+              "value": 1,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 1024,
+              "identifier": "ram"
+            },
+            {
+              "value": 2048,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 0,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 1,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "loggregator_trafficcontroller-3a1b71ecfed752b45174",
+              "installation_name": "loggregator_trafficcontroller-partition-cac94a070a81fd8f3931",
+              "instance_count": 1,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "loggregator_trafficcontroller"
+        },
+        {
+          "guid": "push-apps-manager-08e3edb960eeeff65baf",
+          "installation_name": "push-apps-manager",
+          "properties": [
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "e36ff47f30009207",
+                "password": "fakepassword"
+              },
+              "identifier": "vm_credentials"
+            },
+            {
+              "value": {
+                "secret": "b039fa0102bb1e7b0806"
+              },
+              "identifier": "secret_token"
+            }
+          ],
+          "instances": [
+            {
+              "value": 1,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 1024,
+              "identifier": "ram"
+            },
+            {
+              "value": 1024,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 0,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 1,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "push-apps-manager-08e3edb960eeeff65baf",
+              "installation_name": "push-apps-manager",
+              "instance_count": 1,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "push-apps-manager"
+        },
+        {
+          "guid": "push-app-usage-service-6a2b7067fe713720e072",
+          "installation_name": "push-app-usage-service",
+          "properties": [
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "8694b44a8c8715ce",
+                "password": "fakepassword"
+              },
+              "identifier": "vm_credentials"
+            },
+            {
+              "value": {
+                "secret": "bc5c0321b0d5aca37156"
+              },
+              "identifier": "secret_token"
+            },
+            {
+              "identifier": "reply_to"
+            },
+            {
+              "identifier": "from"
+            },
+            {
+              "identifier": "smtp_address"
+            },
+            {
+              "identifier": "smtp_port"
+            },
+            {
+              "identifier": "smtp_credentials"
+            },
+            {
+              "value": false,
+              "identifier": "smtp_enable_starttls_auto"
+            }
+          ],
+          "instances": [
+            {
+              "value": 1,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 1024,
+              "identifier": "ram"
+            },
+            {
+              "value": 1024,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 0,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 1,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "push-app-usage-service-6a2b7067fe713720e072",
+              "installation_name": "push-app-usage-service",
+              "instance_count": 1,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "push-app-usage-service"
+        },
+        {
+          "guid": "smoke-tests-18772354f972d3ebda6e",
+          "installation_name": "smoke-tests",
+          "properties": [
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "94b65f1725a0dcbe",
+                "password": "fakepassword"
+              },
+              "identifier": "vm_credentials"
+            }
+          ],
+          "instances": [
+            {
+              "value": 1,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 1024,
+              "identifier": "ram"
+            },
+            {
+              "value": 1024,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 0,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 1,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "smoke-tests-18772354f972d3ebda6e",
+              "installation_name": "smoke-tests",
+              "instance_count": 1,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "smoke-tests"
+        },
+        {
+          "guid": "notifications-bb6007db68cdb3258201",
+          "installation_name": "notifications",
+          "properties": [
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "1b92fba9955a4634",
+                "password": "fakepassword"
+              },
+              "identifier": "vm_credentials"
+            },
+            {
+              "value": {
+                "identity": "ea8b8be5c61ef2b02eaa",
+                "password": "fakepassword"
+              },
+              "identifier": "encryption_credentials"
+            }
+          ],
+          "instances": [
+            {
+              "value": 1,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 1024,
+              "identifier": "ram"
+            },
+            {
+              "value": 1024,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 0,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 1,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "notifications-bb6007db68cdb3258201",
+              "installation_name": "notifications",
+              "instance_count": 1,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "notifications"
+        },
+        {
+          "guid": "notifications-tests-cf5d3345eab7767a4a79",
+          "installation_name": "notifications-tests",
+          "properties": [
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "3b16c3f598027823",
+                "password": "fakepassword"
+              },
+              "identifier": "vm_credentials"
+            }
+          ],
+          "instances": [
+            {
+              "value": 1,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 1024,
+              "identifier": "ram"
+            },
+            {
+              "value": 1024,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 0,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 1,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "notifications-tests-cf5d3345eab7767a4a79",
+              "installation_name": "notifications-tests",
+              "instance_count": 1,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "notifications-tests"
+        },
+        {
+          "guid": "notifications-ui-87bbd072f5be58b0021b",
+          "installation_name": "notifications-ui",
+          "properties": [
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "1f48a1122196d263",
+                "password": "fakepassword"
+              },
+              "identifier": "vm_credentials"
+            }
+          ],
+          "instances": [
+            {
+              "value": 1,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 1024,
+              "identifier": "ram"
+            },
+            {
+              "value": 1024,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 0,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 1,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "notifications-ui-87bbd072f5be58b0021b",
+              "installation_name": "notifications-ui",
+              "instance_count": 1,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "notifications-ui"
+        },
+        {
+          "guid": "notifications-ui-tests-5cb66cf095ec1dea893c",
+          "installation_name": "notifications-ui-tests",
+          "properties": [
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "13f1b9beb733ee20",
+                "password": "fakepassword"
+              },
+              "identifier": "vm_credentials"
+            }
+          ],
+          "instances": [
+            {
+              "value": 1,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 1024,
+              "identifier": "ram"
+            },
+            {
+              "value": 1024,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 0,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 1,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "notifications-ui-tests-5cb66cf095ec1dea893c",
+              "installation_name": "notifications-ui-tests",
+              "instance_count": 1,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "notifications-ui-tests"
+        },
+        {
+          "guid": "autoscaling-80f499cbf5cdf1a1390d",
+          "installation_name": "autoscaling",
+          "properties": [
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "008530986d1b87b8",
+                "password": "fakepassword"
+              },
+              "identifier": "vm_credentials"
+            },
+            {
+              "value": {
+                "identity": "57e1ed82b38b1511",
+                "salt": "410d58c220fb2d2a",
+                "password": "fakepassword"
+              },
+              "identifier": "broker_credentials"
+            },
+            {
+              "value": {
+                "identity": "874cb1ab252eb1c2",
+                "salt": "4eab45c69397d61b",
+                "password": "fakepassword"
+              },
+              "identifier": "encryption_key"
+            }
+          ],
+          "instances": [
+            {
+              "value": 1,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 512,
+              "identifier": "ram"
+            },
+            {
+              "value": 1024,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 0,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 1,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "autoscaling-80f499cbf5cdf1a1390d",
+              "installation_name": "autoscaling",
+              "instance_count": 1,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "autoscaling"
+        },
+        {
+          "guid": "autoscaling-register-broker-1a86e32a157338db0ba4",
+          "installation_name": "autoscaling-register-broker",
+          "properties": [
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "29d216170a587b0b",
+                "password": "fakepassword"
+              },
+              "identifier": "vm_credentials"
+            }
+          ],
+          "instances": [
+            {
+              "value": 1,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 512,
+              "identifier": "ram"
+            },
+            {
+              "value": 1024,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 0,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 1,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "autoscaling-register-broker-1a86e32a157338db0ba4",
+              "installation_name": "autoscaling-register-broker",
+              "instance_count": 1,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "autoscaling-register-broker"
+        },
+        {
+          "guid": "autoscaling-destroy-broker-18dda2bc4a119f065a07",
+          "installation_name": "autoscaling-destroy-broker",
+          "properties": [
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "f06e0d0602844c31",
+                "password": "fakepassword"
+              },
+              "identifier": "vm_credentials"
+            }
+          ],
+          "instances": [
+            {
+              "value": 1,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 512,
+              "identifier": "ram"
+            },
+            {
+              "value": 1024,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 0,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 1,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "autoscaling-destroy-broker-18dda2bc4a119f065a07",
+              "installation_name": "autoscaling-destroy-broker",
+              "instance_count": 1,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "autoscaling-destroy-broker"
+        },
+        {
+          "guid": "autoscaling-tests-f68a974a25cdd54b8a64",
+          "installation_name": "autoscaling-tests",
+          "properties": [
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "507d2fc2cbac166e",
+                "password": "fakepassword"
+              },
+              "identifier": "vm_credentials"
+            },
+            {
+              "value": {
+                "identity": "986136dafcc0cdd1",
+                "salt": "468d661be0848b70",
+                "password": "fakepassword"
+              },
+              "identifier": "broker_credentials"
+            }
+          ],
+          "instances": [
+            {
+              "value": 1,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 512,
+              "identifier": "ram"
+            },
+            {
+              "value": 1024,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 0,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 1,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "autoscaling-tests-f68a974a25cdd54b8a64",
+              "installation_name": "autoscaling-tests",
+              "instance_count": 1,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "autoscaling-tests"
+        },
+        {
+          "guid": "diego-acceptance-tests-7263bf59efeb36579a48",
+          "installation_name": "diego-acceptance-tests",
+          "properties": [
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "d5e4e376cad277c1",
+                "password": "fakepassword"
+              },
+              "identifier": "vm_credentials"
+            }
+          ],
+          "instances": [
+            {
+              "value": 1,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 1024,
+              "identifier": "ram"
+            },
+            {
+              "value": 1024,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 0,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 1,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "diego-acceptance-tests-7263bf59efeb36579a48",
+              "installation_name": "diego-acceptance-tests",
+              "instance_count": 1,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "diego-acceptance-tests"
+        },
+        {
+          "guid": "acceptance-tests-1f18b0d143672295a506",
+          "installation_name": "acceptance-tests",
+          "properties": [
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "0c6368e2ab297749",
+                "password": "fakepassword"
+              },
+              "identifier": "vm_credentials"
+            }
+          ],
+          "instances": [
+            {
+              "value": 1,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 1024,
+              "identifier": "ram"
+            },
+            {
+              "value": 1024,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 0,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 1,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "acceptance-tests-1f18b0d143672295a506",
+              "installation_name": "acceptance-tests",
+              "instance_count": 1,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "acceptance-tests"
+        },
+        {
+          "guid": "acceptance-tests-internetless-b7807a92732467fb3e4c",
+          "installation_name": "acceptance-tests-internetless",
+          "properties": [
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "521e0f11e3120522",
+                "password": "fakepassword"
+              },
+              "identifier": "vm_credentials"
+            }
+          ],
+          "instances": [
+            {
+              "value": 1,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 1024,
+              "identifier": "ram"
+            },
+            {
+              "value": 1024,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 0,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 1,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "acceptance-tests-internetless-b7807a92732467fb3e4c",
+              "installation_name": "acceptance-tests-internetless",
+              "instance_count": 1,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "acceptance-tests-internetless"
+        },
+        {
+          "guid": "compilation-04a866af744b6afc8fb5",
+          "installation_name": "compilation",
+          "instances": [
+            {
+              "value": 4,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 1024,
+              "identifier": "ram"
+            },
+            {
+              "value": 20480,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 0,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 2,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "compilation-04a866af744b6afc8fb5",
+              "installation_name": "compilation-partition-cac94a070a81fd8f3931",
+              "instance_count": 4,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "compilation"
+        }
+      ],
+      "properties": [
+        {
+          "value": "1.6.13-build.1",
+          "identifier": "product_version"
+        },
+        {
+          "identifier": "syslog_host"
+        },
+        {
+          "identifier": "syslog_port"
+        },
+        {
+          "identifier": "syslog_protocol"
+        },
+        {
+          "identifier": "smtp_from"
+        },
+        {
+          "identifier": "smtp_address"
+        },
+        {
+          "identifier": "smtp_port"
+        },
+        {
+          "identifier": "smtp_credentials"
+        },
+        {
+          "value": false,
+          "identifier": "smtp_enable_starttls_auto"
+        },
+        {
+          "value": "plain",
+          "identifier": "smtp_auth_mechanism"
+        },
+        {
+          "identifier": "smtp_crammd5_secret"
+        },
+        {
+          "identifier": "logger_endpoint_port"
+        },
+        {
+          "value": true,
+          "identifier": "allow_cross_container_traffic"
+        },
+        {
+          "value": "app_usage_service",
+          "identifier": "app_usage_service_database"
+        },
+        {
+          "value": "autoscale",
+          "identifier": "autoscale_database"
+        },
+        {
+          "value": "ccdb",
+          "identifier": "ccdb_database"
+        },
+        {
+          "value": "console",
+          "identifier": "console_database"
+        },
+        {
+          "value": "notifications",
+          "identifier": "notifications_database"
+        },
+        {
+          "value": "uaa",
+          "identifier": "uaa_database"
+        },
+        {
+          "value": {
+            "secret": "e282675b773249befd15"
+          },
+          "identifier": "consul_encrypt_key"
+        },
+        {
+          "value": {
+            "private_key_pem": "-----BEGIN RSA PRIVATE KEY-----\nMIIEowIBAAKCAQEAxd3ClYPhiqAE2ovtVJwzl2VwX+9MJQ6mYih8mEL6BME8EfJa\n9o1284/cKe83v/vCOEPx7uvYY13oHDotEFStQ/NRhCAbz8aZwbU/qwQbAo3/OecJ\ngszTh05Vn3noU44liZIXb17VVmWPXEtHNJ2wiYaberP8/9OCuHJuIEDK74m1SyVY\nYf0y5G78IcK+ktXMavKUxQqmMH0vMu295OMuEHcv4OiX3crXja8RMtbW2NesK4Hs\niT73YOdub2YnfNAQFMbBpJnh2P/ApoOAoayvT1kizBiME7SAUmmp+tvKE0rbh3aw\nKcQSYQfHF4cAYAH1s9XJyAIoLZu4a+AvRiVOMwIDAQABAoIBAQC4fcx4Qq6i5g+A\ng2X4NWj5ajD8kpCKIP3MmnmKMzESC+bpyPM93quh8GpVg2KVFLaEZf4IS0nJZP8O\nisQH7RxdNlu0eYfVFRW6gzhpSfuxRxtKLv00Q62cBNNbTnzso6amflxxkJgU5b9l\nTB+JlNrNcIA6SebF1r6VIsVCN4fBDh6yyL9DOvGpy37C5Lln5fcqGv2Q3HHU7R1z\nkm8tJV58HNlgXhxzm+R0jLyZyCI90kl4bUm0+Jzi8OVMCmlJFlCEigQe0415xP92\niWyOawZvdTM9yCPDXt9Na0+a2lobnRvDuHZszy917MitUnNcvdRNPsmsFUK0WgMY\npOmF2dJpAoGBAOrCOeh2hpARKsjPQByjQNzgby0W7SlTDvQgg9Q2gkPynvTOHT1c\nQ7ecDQXeBcn+zWlYVVci0SkklCRY3chf2a7DeiCSl5NTJ7opquMJpB4CNs4E6RDc\nFJ4MBMU9dOHHc3vBpJmFczAZFEBO0NC5siSTZKGhQr4sMmZUagS/ZPqVAoGBANfE\n/CtaN42LWdlMp9uqwMXl/eZCKuYzdJSLsT38VQbQ4mz2uCVht2tq8rKLNENI0DHy\ndh585St41VfiRpN5WSAUzoa7f/US/X5+hKfvFP5utH/oYWZMMAD9gCqOGIQaddPB\nmMkcuFw7tXq323bo+wyIHsgTtzZRk4SyTyQzj7unAoGADwbdtA6aMHCY33+8p9if\nV0QaebVk+ucxJtlJ9vSCRB0spZjn8DyOrRsVDlIW5sYjmeGonMpCvzJzNRxnHeNc\nyL4EfD9F6o1BFr6CDMRaN/2GSouv639a5n74czOq3qTotHxBr/4F0Idab39cCHBK\ngeLZZysuXYPwufIfUyx5Jz0CgYAGsKTg8zsluFxg0G+j7/dqK2dj7ElIOfAzauFj\n+p7oRzG+DyhGgHEfc4Fy574HGArcgZgH+fdhEa4Lu4hUqj6JMBv3MXkWMDCL64BR\ndKhB+0y9aocalOIoJbQDncRE1E0y8525HprYwUEvPOQhG7gs+0t5CKN1m7HnO2AY\nz0B1oQKBgDlYxC+WlDtfCSOJ7I8gFTbUhTr3Pn3xiLnn779XuGxk0l+tW8ZFc9cj\n21w6s3gjHGIHMpvc4gJqULJtFbh/LqN5NjAn2aNLb/TyO4egBm/fzQ0Em3BCd6C7\np0J5XqO+6QmmQldcFYO9Q7siP+wljNWof5jTiqOuWaQN87KQDHIP\n-----END RSA PRIVATE KEY-----\n",
+            "cert_pem": "-----BEGIN CERTIFICATE-----\nMIIDODCCAiCgAwIBAgIUW1fRQZGcXXkY61C+bIRz8Wa3G14wDQYJKoZIhvcNAQEF\nBQAwHzELMAkGA1UEBhMCVVMxEDAOBgNVBAoMB1Bpdm90YWwwHhcNMTYwMTI1MDcz\nMzAwWhcNMTgwMTI0MDczMzAwWjA7MQswCQYDVQQGEwJVUzEQMA4GA1UECgwHUGl2\nb3RhbDEaMBgGA1UEAwwRY29uc3VsX2FnZW50X2NlcnQwggEiMA0GCSqGSIb3DQEB\nAQUAA4IBDwAwggEKAoIBAQDF3cKVg+GKoATai+1UnDOXZXBf70wlDqZiKHyYQvoE\nwTwR8lr2jXbzj9wp7ze/+8I4Q/Hu69hjXegcOi0QVK1D81GEIBvPxpnBtT+rBBsC\njf855wmCzNOHTlWfeehTjiWJkhdvXtVWZY9cS0c0nbCJhpt6s/z/04K4cm4gQMrv\nibVLJVhh/TLkbvwhwr6S1cxq8pTFCqYwfS8y7b3k4y4Qdy/g6JfdyteNrxEy1tbY\n16wrgeyJPvdg525vZid80BAUxsGkmeHY/8Cmg4ChrK9PWSLMGIwTtIBSaan628oT\nStuHdrApxBJhB8cXhwBgAfWz1cnIAigtm7hr4C9GJU4zAgMBAAGjUDBOMA4GA1Ud\nDwEB/wQEAwIHgDAdBgNVHQ4EFgQUudhJGKuJCkfqm+OBiDGczI7BNr8wHQYDVR0l\nBBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMBMA0GCSqGSIb3DQEBBQUAA4IBAQBhfDSf\nIoBvHDDakcF87VajRdhyjdgqXjVIdVMTJO9dKsS4T0OzzMro031TsHdwbAVmHd23\nhQYiz/j/SIrm4F7UGGXSwCXxgmnSR7t8dNJms+MemEMkIb3FruAISEHmSQdzf2Qo\nbk6XkLgzedx0gd7HX0RjVD9m4liWFU5wK9hOWQgczyBm2cMWFr1kwuGbHeHE0J/V\n01rM1x7zZToPtR4w25KZJJpmbh6b8F+q8eGFG0u60P/P942tghK/nXA5cIGOR10Z\nYyCObJMDjfVk9uidD+HPjRoexQn8Os3IHPRWVvsjywnnASEteYWf/3vZ/sKUaiwy\njzDhM9G/P5c6UBvS\n-----END CERTIFICATE-----\n"
+          },
+          "identifier": "consul_agent_cert"
+        },
+        {
+          "value": {
+            "private_key_pem": "-----BEGIN RSA PRIVATE KEY-----\nMIIEowIBAAKCAQEAooq989krvpl4sWlYxhLNK92a4gVQc/JIRZy6/FMmr14GNXoz\nkSOCsaHs5NKMx9k5CnxWX9WvZVMCOImr+koI7/m9VZH9cH1pvc250Z/o/Sfdlesd\nS3C7g1LJivLym/cwBMckgGUcWirJhzAx6hMn51sTwn9iMui5+bI1hFWDHfD6kNle\npcTZNTLA28BC0eTLXtVyEHADl/zoMdtgnzhv43aJD8r+YNxyMhsw7GY2USzrgFPM\nJ56rtcvXWXqR8vYv1TJ6wNy9zY57cXbtV8b/XUvRxNo766WRxEAY6mmBXaiWwxiC\n0vQ450LGMYLH6qIah66K93oLKDgL1L90xQwflQIDAQABAoIBAF2caim2OWtcGBaV\nBXuN+Hv69OiXBu6/6r+stEP935nAHPNPncNJIEwNZdGjMVEn2aIgWd53wrwoQm8t\nWs6bNOqAenp9yeivUebuRMZlwlmKTCO7dPOtyVCorUpJAVCx3AXkazFHCj0jx00E\nhLq6rZCg85BgrL2FKxaTfB7q4MisxYgXn1eJ6Pt5u/4BpWxHmz3sxrbh7DJ51vV+\nBMlfa6qze4PX5DleO/AVR6LBzLwr02lHU0ifnhtS0DeBpXgiK33dDEZrS5zCSKOA\n/zOJdTj4le73MQnQ2KdiIiL7oKjHwrfOg+eoJVk7mM1YNT6KcK8L4RMW74/Rp9kC\nIPNVoUECgYEA0xbvzisT7+yS6EY3DNPFS1XghKbEB63kqT9NkQVVxYiqXuKuSl3l\nTvyYiCdHIxfkRslH39dv5VJP7p8l9e1x8zhMtBizqxcgcD2wWDbZvKab+hkM7F1y\nCBUSuRVpbEnl3b5LzF2MBtdyR4P5BoTaInnGbaCMt4Hbm0Haf8C0BWcCgYEAxR+k\nfrAFOmuoeh5lfACjoI27RYG0bYFwoEuBzdCNHfgMsTwQmkiecLRBD3wF5tpFLHCL\nPbQ4D+Qu48ZBUDU2un8a4d88z2APz7GYHg0CQRHAIMNDDjghuUTcyZrZNQ+Uajxa\nlAQHoe/nKW24nmh/DGRP98xmhrebi/UJrZLJeaMCgYEAzY5ZaW/jk1DR4iR1+STD\nzE/NOf/Xhw7cS7/cPetvEdO67HlbdgmnglpSAswU5uSeJBxfxGdbjHmyYtFRuwFF\nZK6fawVe+K2lpgc8kTqgn6ey3kHEput8Xsh+mgNyzMPNdziXQWSbNhJZM7EdMC7w\n6H+jLiAYx55KBw+CwcMayuMCgYBSrdLw0CNhPYaMsfMe76Wx0cCahqyGwaPbl8/5\n419NEp1AOVE9ZPgPjYs8U2imSyZ4XTwJxW0+PRbtslnyql8qGeXMlzWKRWBcXMDQ\n2eP4JtnO5Bdb/28lphx08t3nw4EcjfPv4UDSSy1J0xt8VZf0Op7P8IuQNbKoIT7N\n7qNSwQKBgH7dwwJbdmAqGKIVfqDpyvijxqHHlMiMfgzq3bD4vidhPegaDL0iK/Rr\nuV/jEHQVfIr40ljffLDoeJ098/tVRtHdXwxdQzCJ8Uu8z7aSxhLJR/pbeV8q7j+l\nRIrb72lO6L9LloIqzLIo9p5dVMkhYIARoR58umLoUboK0dHY1PfB\n-----END RSA PRIVATE KEY-----\n",
+            "cert_pem": "-----BEGIN CERTIFICATE-----\nMIIDYDCCAkigAwIBAgIUaIexnCNY0gUkyO4xStgbEkYXAgUwDQYJKoZIhvcNAQEF\nBQAwHzELMAkGA1UEBhMCVVMxEDAOBgNVBAoMB1Bpdm90YWwwHhcNMTYwMTI1MDcz\nMzAwWhcNMTgwMTI0MDczMzAwWjBAMQswCQYDVQQGEwJVUzEQMA4GA1UECgwHUGl2\nb3RhbDEfMB0GA1UEAwwWc2VydmVyLmRjMS5jZi5pbnRlcm5hbDCCASIwDQYJKoZI\nhvcNAQEBBQADggEPADCCAQoCggEBAKKKvfPZK76ZeLFpWMYSzSvdmuIFUHPySEWc\nuvxTJq9eBjV6M5EjgrGh7OTSjMfZOQp8Vl/Vr2VTAjiJq/pKCO/5vVWR/XB9ab3N\nudGf6P0n3ZXrHUtwu4NSyYry8pv3MATHJIBlHFoqyYcwMeoTJ+dbE8J/YjLoufmy\nNYRVgx3w+pDZXqXE2TUywNvAQtHky17VchBwA5f86DHbYJ84b+N2iQ/K/mDccjIb\nMOxmNlEs64BTzCeeq7XL11l6kfL2L9UyesDcvc2Oe3F27VfG/11L0cTaO+ulkcRA\nGOppgV2olsMYgtL0OOdCxjGCx+qiGoeuivd6Cyg4C9S/dMUMH5UCAwEAAaNzMHEw\nDgYDVR0PAQH/BAQDAgeAMB0GA1UdDgQWBBS+tDIEVvTdLAcmIJ/vgmDl729YlzAd\nBgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwEwIQYDVR0RBBowGIIWc2VydmVy\nLmRjMS5jZi5pbnRlcm5hbDANBgkqhkiG9w0BAQUFAAOCAQEAiQaMMu3/58e1NV9X\nIrf8Ss+y7V3Z4CPxuxZZA0fk1mtbkpzjHw+D0lG2YZAw/3ChIXwp3HybIMlMVisT\nAOwy77gbHeWmx+4h9JiTe/zLiO05QNz9ZvX0lQIPtUyBd5Yt3WdpGEME3bq/dxnc\n+hHpc1TvMuXzOiTEGtB80bUX9OCe/WDGCt626qNojwQR0GIDQWH1Z0BsM5EjoHMd\nBAmOfELHfH/AQ1KqqMlwU2o3xDCe+w3R99VaqbD1S5bSWopqUu6Zy52b8iWulyBJ\n/yqyzX+8/xxdfGug+vHqPSKXinSo0UoCa4u3WW2WIpfvnkva3HCuyGcfVaMcWuaa\n7zvyJw==\n-----END CERTIFICATE-----\n"
+          },
+          "identifier": "consul_server_cert"
+        },
+        {
+          "value": {
+            "private_key_pem": "-----BEGIN RSA PRIVATE KEY-----\nMIIEowIBAAKCAQEAoE/xTVsieFszNpYr8GAenFIYfuN/8JcO4YxU9wthwvnRwFuQ\nH+Tk/n2rMkT6fTSdf/8si8HdTx1rLqtKhGBp+i7TO0gWYm8rOYVI6rYGrdINiATD\nBp73XNcKOh2bQ/7KyWO99jemOPo+rWsvPMF9n5Zz7W6kXiwDaroyLB0G8PG+8mct\n5N6S5R9tg4kMWfQol8cWsRD3OvvqGglXJzY4xCnRol4rsYzHfG/j1pUcB3h4Yi2M\nRqCC1+MQW/caaQ9GVNH1ipuXhH9raH0RkxcsXB/OizT3UQACzOaSPJOdWplIK+T2\n0aEb8StmQuh+VLSTUzP3j7Ksa+Swkprg7ix7mwIDAQABAoIBAHGPz9bFfUiXClNb\n0+pmnKiNu05/qAztZRw/hZyvUmSFBaHm+tStF85zhUeJ94ukLwIR6CNkhHpb06Zu\nrs3RYqFYdEflS/4U1CDeGwYxRc/yIaW+Ac155K6+oj8C5A8pucspvdJiH3zzQF0m\ntYKramsXcC28l/Eh6pW7Knl3YohhCKAx0I65oqbyJc039iQlrcPSRrDra5czqpKN\n9Y+xCZh9kYYSiVo1hMveVPXfqxxFMbselPvfCKf8vH2SN/TZteiaWn02C/Qxr+TC\nO39f9tRd4In4wGt8pllMwyZbSI5iEkZ5Zp1X6Qd4/3U1u82wP2CXO0tpxWmabOeL\ngPPaXaECgYEAzYNRfMBBZZy8vmbWqRytMltD00FkWmBdpybCCYmnEmEzdgpnhOKN\nS7rFVjb0KzV+1bRb7GT6JycYQoqU+MlB4JN/a5C5ypkzjGiYmxJnkPnXTh9pcTJE\n0PBoT4J3f+83Kj9gEOVypWaqnupi4P1XxsH1YMyOtJG88xDGguYPZBECgYEAx7H1\nmavbHHBgRpN4UgXxRq5qUGTIcL9Wc08qV3MHopqHWv6Zqumgiedr9jCEpw/J1nef\ndIPE7/mHXglTw4XXzeKJ98i/NswcEUESBqGewn6sGz7+19LcKPS+jffzMaoIb0dH\nwWLtrIBml4C5tTXQOpxsj+B8sZkqOXIwV7RxoOsCgYBapo4PJQ6zr4thwSL2vXt4\nNuGYEcQeSVuGG4aDhoB3jwCQFM7MwtHokZ3yBZN2a8ZipYfWokPleU0uLMrBYqT4\nVpdh7xjE0Qb37DtES737KPlbsGdmUvIf56tbRwVHHVGMBSBu04bahorERkcPTzCk\nr3F5HUHlTFO4M7IckzY+wQKBgQCqUxViHvziQs87Iykq/LqQSM+RBoUX9XrtGwbI\nU+qdPCRa7nFvH5m4RdUFxNhADe1fqeQtYv6kmDZndJknWY95odF/sI+3U1xVMyUG\n1u8sgRKWoqKGvujdXfLx8BxTre1HzIpdXd3Oli3q5vZ+owmaFDVcemKgsD0dhlHJ\nXLTWRQKBgHhMAugxxYufDq7KT9+dJ0IIXDsahA4r3o043qq78+qh50IkJDnLYP5R\nt0uKe4eFp2RloYqK+CzqxqdSUpGRW1LzpCu7kSyXRLadnsaWxK9gzVoVI1IM75Za\nj686pPqNj7ixUqUqm2Z+R/F7s2Tz4RQoSxrd4y8eghUnM2sP8lvh\n-----END RSA PRIVATE KEY-----\n",
+            "cert_pem": "-----BEGIN CERTIFICATE-----\nMIIDgjCCAmqgAwIBAgIUDU5TTjLLqQmZHnIbqXDrrET3waswDQYJKoZIhvcNAQEF\nBQAwHzELMAkGA1UEBhMCVVMxEDAOBgNVBAoMB1Bpdm90YWwwHhcNMTYwMTI1MDcz\nMzAwWhcNMTgwMTI0MDczMzAwWjBCMQswCQYDVQQGEwJVUzEQMA4GA1UECgwHUGl2\nb3RhbDEhMB8GA1UEAwwYZXRjZC5zZXJ2aWNlLmNmLmludGVybmFsMIIBIjANBgkq\nhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAoE/xTVsieFszNpYr8GAenFIYfuN/8JcO\n4YxU9wthwvnRwFuQH+Tk/n2rMkT6fTSdf/8si8HdTx1rLqtKhGBp+i7TO0gWYm8r\nOYVI6rYGrdINiATDBp73XNcKOh2bQ/7KyWO99jemOPo+rWsvPMF9n5Zz7W6kXiwD\naroyLB0G8PG+8mct5N6S5R9tg4kMWfQol8cWsRD3OvvqGglXJzY4xCnRol4rsYzH\nfG/j1pUcB3h4Yi2MRqCC1+MQW/caaQ9GVNH1ipuXhH9raH0RkxcsXB/OizT3UQAC\nzOaSPJOdWplIK+T20aEb8StmQuh+VLSTUzP3j7Ksa+Swkprg7ix7mwIDAQABo4GS\nMIGPMA4GA1UdDwEB/wQEAwIHgDAdBgNVHQ4EFgQUUqsy8Eo1dZI9meRlZYD2lq4d\nMEgwHQYDVR0lBBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMBMD8GA1UdEQQ4MDaCGGV0\nY2Quc2VydmljZS5jZi5pbnRlcm5hbIIaKi5ldGNkLnNlcnZpY2UuY2YuaW50ZXJu\nYWwwDQYJKoZIhvcNAQEFBQADggEBAKbhXAP8fgusRPL+5PKlZIm+URS7qH890L3D\nF430JHYvy5MBtjKACxEBF+NtFDFR3Dy4seO8gUSutPCD5LMa/hA5iIOefEjadkMd\nRnhS5ILcRAZKfNM7AkW+wp2KtZb+LSGuWeQyfr0hdRgTE6CPwLpN4TM6rnyh/ZFL\nT4xxrpCE3QbFFJCVUqzjMomQ2BvfVY7juekYRraCtNzfIfxTuM6FVY3+Rr38zUw1\nvF0wo3cx+DzDoCQU2IESuanW24udB40cJwiCfJX2lLkyfDdR8ZMaQiu7q+pZE628\nZgM4ydPcCPJE8sat/l6ArLKeMKLnTkeY0w0hnsnaetmoy+mfRnE=\n-----END CERTIFICATE-----\n"
+          },
+          "identifier": "etcd_peer_cert"
+        },
+        {
+          "value": {
+            "private_key_pem": "-----BEGIN RSA PRIVATE KEY-----\nMIIEpAIBAAKCAQEAuyiDMR4kf5xcg5WYEVhISJ2aMrVNgSN4mjcjvMR3hkoMQJmR\naCRP3/YftF0C6hlPk6SfVdWT97keh66ASWXDzXAeRXO229OSYwOF2NEHLASAnOsL\n9FDk+wa39c5fGkA+1928UWybwzTUprwiik2fherLMRRSKX0eqSu0PTcUTfi+WWio\n4Eww/S50J1yiKOXQstli8VvzwIJIErqXWis0wN8WIlLgNCJSN5WIvykgmse9SeJT\n6q6s0b4fqz3IWc/Jtr9AhQVSe+HOKDnNUNq9WfZG1QBUMWIf0jYZJpJTvAXP9FyT\ncOpCRs+kaXEkMXZi/GLh+P/bZoXyzCHfrS3H+QIDAQABAoIBAQCipDod3QvquX7L\n+pwDtqxaLltp5ZRMvP55RaGQ0UrtMDwlh06NKcEf50r1+j4mIYi9zTmJ5eiIRh75\n2fMx1XWqedxUjpJBxkJYOR9/o2aQIfmCY+AnmITkgJosygJrVZlHDjIwsClMIgUK\nQEPj3EDcp4WcSQR9eXXDnW8sI0lJ13throrFoFGcCHNSB69MexfgsqEzRVnq1L6y\nFBKA5qpSi5cUmS77QUgLDxihEChCxN3NQzUPTn105gEKw2eecBw+x1VKbmzpDvlW\ndJ0niu3nlIwJG1boce2bsFeHyeeolAkkOaPLBnXFFst1KiMqAEkg4hxYvXTGTwAq\nluZgzHbhAoGBANwg6M4utyMCkfzJ/feP+hW8Qa4Q5X81P96sORs9fhG+agLfdf5Y\nai5k0FF8+wrxUB2S+H6Zr6VPc2q7iA1lo5diXG7FerkldGbbBwLJomjesR1rXJ6p\nt1SZbuRfAE85yCPvYZv0B4D9MA/dLVoRqcXqJVRoWWDP1HHld+QG63q7AoGBANmo\nLtDuBG0uh0Cxt/w+eGwxjk/7cHZpwChILdItm7ey/q/wQuKOuj8rYUQhqyXd6Pez\nBnJzZOIF9lFSy8NcNNnWOMy0s2F1Okse0a6/kbPM7K8D1tgkfEUsWFzWqsvurhNU\n6DtAbTvcEX/aYYbuoFUlUhlB2oY5CUn7mNNgH77bAoGAYwWm1EEtfuFEHKwcw8WP\noUFrZksRgdTJY3ijw744vPCkLaCqKn1JXo9ZKp8HKxf8iyE3CXRHEB0adVPg0u36\n1jmYDPhmyWyw3SgAEl/z4Cr1D5/hLTp5TuQqfy7BK+J5RrkDdq0ixwKeITTElvTF\nI1O98SdztVooXgf0k64NNcsCgYAnOB/fc9QGXGjwplVRtWv7it5q2RLFs351g7QF\n+EPj0PQFfdR/gFpdAZMQNMTjGN5eq7qQquxVsd9VfgbLV/UJ/4jSkgj0mav8VzxP\nMaOuc1F+o8F1xvVBfaEacW/rOUHSp+0EqDJGo/vfPtlt99eaIBRwCqa2otZip1w9\nUkfGGwKBgQC053XoTakvF99E9CU7MDuL94MfmMIcGFXBwc+LUYggRbMmpaRh+Wcd\nY6/Y17nrvb+PGLijOPAOsvijZnHpB23r6J/J6aLoXevYuUVvFuMY+pYdiZAC+ixa\nePx+WSRrIV5ASODtE86gC/8n1qAHFrACdFmz4VrD8XnY42gc8Y8Mig==\n-----END RSA PRIVATE KEY-----\n",
+            "cert_pem": "-----BEGIN CERTIFICATE-----\nMIIDNzCCAh+gAwIBAgIUfpm4ArYut2rUbfT3Rd4UAtgfH5owDQYJKoZIhvcNAQEF\nBQAwHzELMAkGA1UEBhMCVVMxEDAOBgNVBAoMB1Bpdm90YWwwHhcNMTYwMTI1MDcz\nMzAxWhcNMTgwMTI0MDczMzAxWjA6MQswCQYDVQQGEwJVUzEQMA4GA1UECgwHUGl2\nb3RhbDEZMBcGA1UEAwwQZXRjZF9jbGllbnRfY2VydDCCASIwDQYJKoZIhvcNAQEB\nBQADggEPADCCAQoCggEBALsogzEeJH+cXIOVmBFYSEidmjK1TYEjeJo3I7zEd4ZK\nDECZkWgkT9/2H7RdAuoZT5Okn1XVk/e5HoeugEllw81wHkVzttvTkmMDhdjRBywE\ngJzrC/RQ5PsGt/XOXxpAPtfdvFFsm8M01Ka8IopNn4XqyzEUUil9HqkrtD03FE34\nvlloqOBMMP0udCdcoijl0LLZYvFb88CCSBK6l1orNMDfFiJS4DQiUjeViL8pIJrH\nvUniU+qurNG+H6s9yFnPyba/QIUFUnvhzig5zVDavVn2RtUAVDFiH9I2GSaSU7wF\nz/Rck3DqQkbPpGlxJDF2Yvxi4fj/22aF8swh360tx/kCAwEAAaNQME4wDgYDVR0P\nAQH/BAQDAgeAMB0GA1UdDgQWBBR7o+ymNdMAVUhZmeaMKoBL1iDRVzAdBgNVHSUE\nFjAUBggrBgEFBQcDAgYIKwYBBQUHAwEwDQYJKoZIhvcNAQEFBQADggEBAG4NT4XI\nXY4GtUqTfNiHbJB1NFpwOHVTY93S4u4EdBDe+0YCw1gI8xVSKniybuoivFnvpAtE\nQMpZ2GYdRc/oZKu4yAiEbxATXei/vCDhfw3TfCAJGDDXbh+7PiTPJt7bn6nCRFV6\nE35qI2Zz0lWutn0JaOw4cZ+Dzk6/4fJAMF4sWBFH3yVXYpTr8MgjfQzJQl2ZP2Dt\nQQUPEUTgY+WDpP8Z9/GVSorD7CH1UP6xIZ/IstkNJjl7VQcgp7w+6x6a4H7ke+ku\n8bJAjLvInjN2S72V43s3vSDy+hYypMkSL3SH/vXCQyUSm0E+X5s1HsdNlh5tMXEU\nyfQmsSezvsy6CNI=\n-----END CERTIFICATE-----\n"
+          },
+          "identifier": "etcd_client_cert"
+        },
+        {
+          "value": {
+            "private_key_pem": "-----BEGIN RSA PRIVATE KEY-----\nMIIEpAIBAAKCAQEAuvDH3Yy1E9w1yTU/cKpUq1gACLtE25g2zOvxKgwwe8wXgLjz\nzYx9iXNV6TY1uWdYvTp3shmAu/Tl8Fs2pmSP9HOreGuPFQa51rcsvUJyxpkSXwXb\nXfFsX7f9A1bi82iMwe95Y896t1Dnrze+L3PrQn8MctN/YWD75JzsEaN+H85jsGBQ\nV6R2abdWZeL2TZzLIKUPRdHO7vS9lZirQ2vvVWgS7eBL6yLCKh6aCyKpAv7U6FQn\nXvoRLCbwnO0EasyKs4N71hT5QtvPhyHsG4QMcP0bc6yy+ERsfAFSKxwJkeF+yRx0\n62DCXBLO94dFOBUhTxeMHBxqp99LaWb+V3hFhQIDAQABAoIBAQCUpvcns8YiPs/+\naftCig++GMIeL1w4Crg5B73EI+FB8C8YSvqEDx2ceTxtsI/UGNw1zRJ1a1Y1IC7g\njIfOlNTsHDbUESO8IpcQqKRI81f1mK9FJJEmCN6W1uW5DBR4XkDfzqAGwGvi7dDu\nQjNX5KPFQuYRQSFfvBFR337RH+MhQk3x5bRLtMnY1dM4jncGTrFJMWL07TBlZPI1\n56LmlHJcrtQ9Lem15W6WIYwU+I7B5Z0ZFcSyBE4LYj/r+JbDAL669KnUYlDkg4AG\nORHcVrDmObSE/yiKK3QylWxlygltCoZK191HRW4+tcocTzld11fUVDuuzPsl5gJZ\nVVYr7OfZAoGBAPEGj/H80RTEBCPiBHz6y4MxeTjF1aMQdOpQvUkj3n+XOxqRstEU\n9L5Gj++hTIpyQg6yV77PpFzzRNIz+DXUv99NlJgF3ZyhnCnhUk3NGjVHmf54Jk5e\nWQ63n5rTowmF1xM3o7f4T2zVnhpEwT6a661FSVDJc7RPbOPOszaLrBgbAoGBAMaO\nAxKNCzeH7tokDRV95ltWpAqUJPnwBRQWbTTDDpORVIyLcXEwlw6/S0IIvxT+dPYV\nMmzdOCu///CdymF00LON1/6jpCnGCjVVhNU/muOBt6F2yUL3DoleWt0U97tUELEK\njKboRFiKaj+ZJ3pQLDm2D22FhxKzz2S6mrXhLjLfAoGBAI88SiESEKLZlmhIskgf\ntwABT7v4feyJJCH313V21oxWsG4qtezhGk1Vm8ZZwiXonu8i91hTB6ehfn25GsHK\n7DflX/A0VC34MNkGqaXIxNFy+sYqWwFpul0vrK8TJKnNGzK1dxsmevT/whR0Va9B\n29s9+MME5Tj7loePWBuLR7uPAoGAPZiStW+R+kEuRPgIIxGyo8VGEI4SxoLCYI/w\ngvy8CeV88DjWEYI8anPHug2SkcW6rRi4UvNx2IiwsomQ3hjqIbmwNyu24sqwIgmM\nsscPmuKEABAksaSJGu5ti8ZUcAXNQ879AU5u3XTbLy2pBJXYknK7aIOS+qdTgHEv\nS5s2xMsCgYBFf0g7BptHQsMTLsP3Jy1/SZPKSn/R7B2FT7myUAFccuCbfzb1BCb1\noIPsrsmwVUfA1gePLsfsVaRWFRjDfoiKH+BLI/BEpCQd/mrBzN20aiE1bTGfUVGw\nU0cobTaJViJqGbu7miB9OyLJgP+IL/mCM7WN6LdrfYdP0qjft3YW1Q==\n-----END RSA PRIVATE KEY-----\n",
+            "cert_pem": "-----BEGIN CERTIFICATE-----\nMIIDgzCCAmugAwIBAgIVAO3gIZvptxqHyW2qXjshw77X6w28MA0GCSqGSIb3DQEB\nBQUAMB8xCzAJBgNVBAYTAlVTMRAwDgYDVQQKDAdQaXZvdGFsMB4XDTE2MDEyNTA3\nMzMwMVoXDTE4MDEyNDA3MzMwMVowQjELMAkGA1UEBhMCVVMxEDAOBgNVBAoMB1Bp\ndm90YWwxITAfBgNVBAMMGGV0Y2Quc2VydmljZS5jZi5pbnRlcm5hbDCCASIwDQYJ\nKoZIhvcNAQEBBQADggEPADCCAQoCggEBALrwx92MtRPcNck1P3CqVKtYAAi7RNuY\nNszr8SoMMHvMF4C4882MfYlzVek2NblnWL06d7IZgLv05fBbNqZkj/Rzq3hrjxUG\nuda3LL1CcsaZEl8F213xbF+3/QNW4vNojMHveWPPerdQ5683vi9z60J/DHLTf2Fg\n++Sc7BGjfh/OY7BgUFekdmm3VmXi9k2cyyClD0XRzu70vZWYq0Nr71VoEu3gS+si\nwioemgsiqQL+1OhUJ176ESwm8JztBGrMirODe9YU+ULbz4ch7BuEDHD9G3OssvhE\nbHwBUiscCZHhfskcdOtgwlwSzveHRTgVIU8XjBwcaqffS2lm/ld4RYUCAwEAAaOB\nkjCBjzAOBgNVHQ8BAf8EBAMCB4AwHQYDVR0OBBYEFAn6DBTLfJW9YU2DwylL9ROF\nmP1AMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDATA/BgNVHREEODA2ghhl\ndGNkLnNlcnZpY2UuY2YuaW50ZXJuYWyCGiouZXRjZC5zZXJ2aWNlLmNmLmludGVy\nbmFsMA0GCSqGSIb3DQEBBQUAA4IBAQCM4gWjO3x4tFMaKD5Gz4ua8ybyH7h3vbwS\nZL1N1c9sZNu4g1jhucgXmiaY9ja3IhsI2N4mcZwkSOewDfPKBSTHnZYjz0H0feb9\nJvh4/7pzk2RDAP4VRSccD0VOA80jc0FLHBnurhCebnPbP1TsmcsfCJ6E6k8EMcz2\n/tWb9Uha52mrIHJoZj5p1pWoO4Bisk5lZIH/APL/jQMEzL6hARRd3uHk9Ap8XaPn\nNg+m1H7KDPVvDkdts1oolSi/0+hfz88hTjcOZcRCWttslbitsr+ArAZg9up3Soag\n/Ueu0aibq+qUDLlIm0Zlp367mGMK4uGSpBip/6vR6EdDO29okXL3\n-----END CERTIFICATE-----\n"
+          },
+          "identifier": "etcd_server_cert"
+        },
+        {
+          "value": {
+            "private_key_pem": "-----BEGIN RSA PRIVATE KEY-----\nMIIEpAIBAAKCAQEAzVcvnYwglYY5qPeylRN7eFPSp02QOQGm1CeZp1CecZVasvdx\n9pKzkxRAEtgNVC1ZoIOkco66htBbTZ5S+reIBhFIFOqhfOEmfGEyK/eJWr1h6z6K\nyd8odDp2viYnyXAR37tkmrmnCrcc4GvrM3QlTInIVBebi4En6nvw0NqgLjhHAtSh\nGWKwC6gxkHs9A4+zjjJLEDSHAvnleKr8aGJSWpbAyzWTWlWcl58KkRaRqfID3oiM\nJY0RVJvrE+jrDlRmRLpMD5GFi2hSkQHUbElWy6WH//Z+PJnp+YeTUCLZv3GCMH/a\ngwahhNus4cP6pv9RZaIR0XDji5aOIAaaGnAKDwIDAQABAoIBADyG9JwmD/zDQf/S\nc6uJwJ1pZ/C05kxHdluXCK3PD8U/Vyrl0YvzFkfGclSbpuInNAIii7jQ5Z6TkDZC\n8wbATrIrKeowd0WOQH/tTpKzNqOuq0xidRqoUw5fpVzLdnLkPACNBkytaNW5wCNO\n7FeQZuY2vvw6sTjf61otCoEl0I2OtfetUk6crx0libCXh10jSTyK9uxEa6+VuIu0\nNg/vHWq7b/62Ruu9fvM2v3c6bEboJ/znTjWtT5oqt2Lfk7/O0/ScEOYinYeMW2lv\nZ0be0AmfZ3NbSSNOQCbjjDO9snvsc7mYuAzBOtDeL/gLZpzuxrbKqVE+2Kqkspfh\nsF8IVsECgYEA68WPeJ2UiXnKQwuiVvLxXHUG4q97m1KqP7Kw/sVYufsaiuVuc8qG\nvNph77uFcryL+UBqH38lTDKakGS0lALe+GsYb+vSABkySz+kwaVdQb/yI2YpnN8o\nkAZ5zfXxztgjNTWp1ZE42LJex89VXjtukzZxEL7w5C2zdPFbeKfL0fECgYEA3vU+\nB2GbPZPLBf/jXkb4GoNQhSUEnbbrHfL4TDEwKrPPFAYVE2VzFQ4va3xNum8Tata9\ngwheosOskxcByf/yy4xmZFcDS77ILyff1WQCR8SmyhmlEKqad0YlqbEZSs8mBQV8\nEfcCFQTwEbOHx+iQuJkHf3GKVc1lnPOPsiYdm/8CgYEA5k6bsUSs3gW8D/YDZE/4\neUpPqYulgLolWAejYZtA6ptg+CDZ3f4N09i3JkjVOJj5WkcT4yR+OIqN9VKKGrMb\nPyrOOjXvcu0p9dt7gzWXfSyUyQN4zqYmp1nMDeabiGQVMFr1RYuQLg0/DIt5Zo1D\nnEXn+GWsRhhmXmuN4LR4IuECgYEA1CO6emF3yVZXZYT9PNX/+ZIaSiVXyAykl6F4\neV6P+wGNNfs3kHYF0vHlUrs6ZfqMGirqtMOA8BOIn4fTjvT2epBDWJOmMir75Epn\nYm2+8bR+EmvmL/5z7KsU6On2K8T/4uU+EQXauE8zcVRGDIMPOGV6ydspicxeM8FX\nZ2V25NcCgYAz1a5ZPJDMkzx4tkG5/EeBX0pn2DJFeY42a9uvBktakl6VhYDaajG1\naC3npJ2lR3brCnRcUl+BcRrbibiwyryutCjMLOA2QPsX+WCkvBRMXQGD4qlzLh6n\niZ7pPSSHQiiHsxyiu/3PKHElxbxFVQfdN2Fdop0PlpMWHVGfZeKnEw==\n-----END RSA PRIVATE KEY-----\n",
+            "cert_pem": "-----BEGIN CERTIFICATE-----\nMIIDNzCCAh+gAwIBAgIVALmR/vP8XtWJTHqI7RUD/03bqYsmMA0GCSqGSIb3DQEB\nBQUAMB8xCzAJBgNVBAYTAlVTMRAwDgYDVQQKDAdQaXZvdGFsMB4XDTE2MDEyNTA3\nMzMwMVoXDTE4MDEyNDA3MzMwMVowOTELMAkGA1UEBhMCVVMxEDAOBgNVBAoMB1Bp\ndm90YWwxGDAWBgNVBAMMD2Jic19jbGllbnRfY2VydDCCASIwDQYJKoZIhvcNAQEB\nBQADggEPADCCAQoCggEBAM1XL52MIJWGOaj3spUTe3hT0qdNkDkBptQnmadQnnGV\nWrL3cfaSs5MUQBLYDVQtWaCDpHKOuobQW02eUvq3iAYRSBTqoXzhJnxhMiv3iVq9\nYes+isnfKHQ6dr4mJ8lwEd+7ZJq5pwq3HOBr6zN0JUyJyFQXm4uBJ+p78NDaoC44\nRwLUoRlisAuoMZB7PQOPs44ySxA0hwL55Xiq/GhiUlqWwMs1k1pVnJefCpEWkany\nA96IjCWNEVSb6xPo6w5UZkS6TA+RhYtoUpEB1GxJVsulh//2fjyZ6fmHk1Ai2b9x\ngjB/2oMGoYTbrOHD+qb/UWWiEdFw44uWjiAGmhpwCg8CAwEAAaNQME4wDgYDVR0P\nAQH/BAQDAgeAMB0GA1UdDgQWBBSr6G7ZLFYFSfzSJxKKyOiLLQQk4jAdBgNVHSUE\nFjAUBggrBgEFBQcDAgYIKwYBBQUHAwEwDQYJKoZIhvcNAQEFBQADggEBABmUZs7S\nJ3jx0Ml6NBazr4G9+YcZ59lT9xI2mbVjcFVVDCGDpQade1XhFTKDKddgOS5Gi9qs\nH4tDhRMbu0V0IuVHRbIxtdTKB7OaY4XtjkTgDLt60FCxMPHP6D9E5lMhuQwH50LO\nT2yE+wZd+zsgdWlefKNlpn2puDImaUAxn8+RfS35+F/JcRVpyvR6WZSm6F4itv7F\nZQDLehzGFS0n7FkbSKDbM/GrU2LOjxmaVBwSEDXE4g6qfYNnWKOUbpEWtSq2WDVy\ncYUyxBc6x45EbrPJTlNF1z6lJTOI/vhDgGDmLCh59OrPC/3s/hA9nGcOMETnQJs5\naVMcZI725WB7fC4=\n-----END CERTIFICATE-----\n"
+          },
+          "identifier": "bbs_client_cert"
+        },
+        {
+          "value": {
+            "private_key_pem": "-----BEGIN RSA PRIVATE KEY-----\nMIIEpAIBAAKCAQEAtC5ho2uSjAFtxIcTgESkUjh/napsOGymA4j9pUeNP847IGY7\ndmYohZIueGvBMC5CnTWQ2xZGQiv80VtWbgS5U8oYnY0vEp5EjepgkPk6bja9O85Y\nR4t8+eRkRnqjfvByfwCmq/L1wUuUkWOJMlDbxK/nvo8e17BYQ4Mf8BD520EJ2eyI\n6IZAmjiMU+fjwch5Lr0MklEMpuRmBlG6RYDafGMmYd7HhpX0u60MY8ySeHnmBmq3\nv0cwkSlxeP7Dut+zlKKbIc5t3eGY46aDqmZNO2WAjLXAGtniJP7jqBtghsHFAYP6\n08dpESKKUy/kw5Pf3lix+HTz4QoDz4al3ATuoQIDAQABAoIBADCniaQYa0U1KY/1\nLbXoUzsEmKlZmMmPxTCVMHEOJj1BkkPId2wcX/rZo4TPDCbXhxNuoIQYurYprKZX\n9LnWuri+jPEWa8yqQjbUQGlFc5rJW0YoDTyclQ3ht5Y0jau8gB59bYRnIielIiQ0\nbZrRrNaq7XhOq3Rw4RSx9tDbtKyYqjBUaTaGwvNKXQ474YRykkT+whFD62TJ+K6/\nmmglu16pizskYT8ZHqCIo1Wg5F2QII/YT7medDROVQpbLGzI/kcNFT/Alzk4Z+eD\nGCC43H8dcM/vOIiBnggzq7GYlF/aHIggP+ZiMi9nuPRmS48CVljCJAIpdaaJvRif\nZju1MhUCgYEA5bn0ro4Il8eCK2UUw41zdvHJ8dgPRlENQWIwYauEs/GFNbTdPWcO\nd2t+bFgwC3/1rwlqKe7H1NRjfqG+dzxBpgP0BwfCrzgNJ/LTltmvIvji8mcSDKdo\nRYAnb0CZKUCjLhQ/ZHJ/a4N8xQixqgQP2trKKHWhcTRiIGGt3oSOEdMCgYEAyMnQ\n6vYG2HU+q3OirwUSPTEz+3d/br/iJQzbpeGLf5osRgron7phLHvV+yk/mXdCD6u8\nS+Fy4IHgIGXdneTTgMFPfa6nlZjFzNBRx74GovoF62qnrBs3E2VMSAxtsIFDSJdq\nv2VJbcUNeGOwUy0jdKi0eDwNl9LIJvqTonPXATsCgYEA0n/2qQwU658ws7rHr/ip\nWNBtj2G/fVs/ni3uz1BvJMOmoHO+VklchCjHi1ezjpYN9fnWgd3+1hJXqO1krbVV\nIl50+QwvZIcj5vsmzw9g39bXfe7cJyQu86Begh7bOWW1IMAE5nHUOBwf9BvnUDaw\noIXiv/gpmqW5VJqsyz0DQWkCgYBcZ8zXJWzXF3ZFD42yQII5WTiUJVWnUXWxGW7I\ns7kwe3KetYyDXhI0l7VNxpj3dtQXRDD/Nv1YZ00Pe/H3JYVU/yInNEb56Po3HTRV\n2ZVSUgCBbG9IHKpHKdpmWhntHkAp202MUf/uHb7qRe6zCNYFbVLI9tJGqgHlNnLV\nU7yCWwKBgQCoK4IzTNuh7wE2KKpxLPLXnPZgJ56vmjwjETRNpS7YFtppgYuUcg+F\nl0a49v/yudYJdA1fKJZR+ksL7PYEbTQksZk+jcsewEw7J7yf2wN2xyiMHC+0jOtN\nnZggUi635444edsdHUr8bfnZIE8AsXMwOmstQH6Wxl1G0nuuS+oKDQ==\n-----END RSA PRIVATE KEY-----\n",
+            "cert_pem": "-----BEGIN CERTIFICATE-----\nMIIDfzCCAmegAwIBAgIUds8Emugxht3a32a0jnwHM+byASEwDQYJKoZIhvcNAQEF\nBQAwHzELMAkGA1UEBhMCVVMxEDAOBgNVBAoMB1Bpdm90YWwwHhcNMTYwMTI1MDcz\nMzAxWhcNMTgwMTI0MDczMzAxWjBBMQswCQYDVQQGEwJVUzEQMA4GA1UECgwHUGl2\nb3RhbDEgMB4GA1UEAwwXYmJzLnNlcnZpY2UuY2YuaW50ZXJuYWwwggEiMA0GCSqG\nSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC0LmGja5KMAW3EhxOARKRSOH+dqmw4bKYD\niP2lR40/zjsgZjt2ZiiFki54a8EwLkKdNZDbFkZCK/zRW1ZuBLlTyhidjS8SnkSN\n6mCQ+TpuNr07zlhHi3z55GRGeqN+8HJ/AKar8vXBS5SRY4kyUNvEr+e+jx7XsFhD\ngx/wEPnbQQnZ7IjohkCaOIxT5+PByHkuvQySUQym5GYGUbpFgNp8YyZh3seGlfS7\nrQxjzJJ4eeYGare/RzCRKXF4/sO637OUopshzm3d4ZjjpoOqZk07ZYCMtcAa2eIk\n/uOoG2CGwcUBg/rTx2kRIopTL+TDk9/eWLH4dPPhCgPPhqXcBO6hAgMBAAGjgZAw\ngY0wDgYDVR0PAQH/BAQDAgeAMB0GA1UdDgQWBBSQJTiCTB0R3Bhm2IxOYkw9lfaf\n+TAdBgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwEwPQYDVR0RBDYwNIIXYmJz\nLnNlcnZpY2UuY2YuaW50ZXJuYWyCGSouYmJzLnNlcnZpY2UuY2YuaW50ZXJuYWww\nDQYJKoZIhvcNAQEFBQADggEBAFDO7SZgYsOy/w7De7K1xTB6U76TPRF6OZMrgQVz\n9dlpxzjYxyKqc4dwPC63tIpNR/iz3dgBkYfYCpZ+KRHCQpsR6XQPL4pmCMoVKRrC\nKLUcR6H3NP6ZT1h3FjNY/Nh0EEwHr6a/QLY9+qI0X1gmkIvWPp7InoXhodUHQVBh\nBt3YfffxqY3IvZZ0DCKFEjYfYn8vzxieYgTIVvywdBJNcnwXs+boyDxCrSSZH9pX\nrkXqAxkXJSt/je2vRroueh/oDbCIWMhEOLgTP99i5dZoscY6Mo1wxNBLm0DmHItP\nSnCcpA8OI1THOPf/ZnyN7dz67tm7zVpJ3u0+QzTHEmhGJNc=\n-----END CERTIFICATE-----\n"
+          },
+          "identifier": "bbs_server_cert"
+        },
+        {
+          "value": "internal_mysql",
+          "options": [
+            {
+              "identifier": "internal"
+            },
+            {
+              "identifier": "internal_mysql"
+            },
+            {
+              "properties": [
+                {
+                  "identifier": "port"
+                },
+                {
+                  "identifier": "host"
+                },
+                {
+                  "identifier": "username"
+                },
+                {
+                  "identifier": "password"
+                }
+              ],
+              "identifier": "external"
+            }
+          ],
+          "identifier": "system_database"
+        },
+        {
+          "value": "internal",
+          "options": [
+            {
+              "identifier": "internal"
+            },
+            {
+              "properties": [
+                {
+                  "value": "https://s3.amazonaws.com",
+                  "identifier": "endpoint"
+                },
+                {
+                  "identifier": "buildpacks_bucket"
+                },
+                {
+                  "identifier": "droplets_bucket"
+                },
+                {
+                  "identifier": "packages_bucket"
+                },
+                {
+                  "identifier": "resources_bucket"
+                },
+                {
+                  "identifier": "access_key"
+                },
+                {
+                  "identifier": "secret_key"
+                }
+              ],
+              "identifier": "external"
+            }
+          ],
+          "identifier": "system_blobstore"
+        },
+        {
+          "value": "no_groups",
+          "options": [
+            {
+              "identifier": "no_groups"
+            },
+            {
+              "properties": [
+                {
+                  "identifier": "ldap_group_search_base"
+                },
+                {
+                  "value": "member={0}",
+                  "identifier": "ldap_group_search_filter"
+                }
+              ],
+              "identifier": "enable_admin_groups"
+            }
+          ],
+          "identifier": "group_search"
+        }
+      ],
+      "identifier": "cf"
+    },
+    {
+      "guid": "p-mysql-f5711ba99afd40dcda6a",
+      "installation_name": "p-mysql-f5711ba99afd40dcda6a",
+      "product_version": "1.7.3",
+      "singleton_availability_zone_reference": "cac94a070a81fd8f3931",
+      "network_reference": "4fd3d742337fdc132edb",
+      "availability_zone_references": [
+        "cac94a070a81fd8f3931"
+      ],
+      "disabled_post_deploy_errand_names": [
+        "broker-registrar",
+        "acceptance-tests"
+      ],
+      "ips": {
+        "mysql-156c6e4c67f639dbe88c-partition-cac94a070a81fd8f3931": [
+          "10.58.111.119",
+          "10.58.111.120",
+          "10.58.111.121"
+        ],
+        "backup-prepare-f6776d5b5904433fd7c5-partition-cac94a070a81fd8f3931": [],
+        "proxy-bfdd805c8061af600ad2-partition-cac94a070a81fd8f3931": [
+          "10.58.111.122",
+          "10.58.111.123"
+        ],
+        "cf-mysql-broker-2fa21b4427b214857930-partition-cac94a070a81fd8f3931": [
+          "10.58.111.124",
+          "10.58.111.125"
+        ],
+        "broker-registrar-fe10fe7fb3d624fcc4ee-partition-cac94a070a81fd8f3931": [
+          "10.58.111.126"
+        ],
+        "broker-deregistrar-b0a1fa8986b16451c3a1-partition-cac94a070a81fd8f3931": [
+          "10.58.111.127"
+        ],
+        "acceptance-tests-832bbf4f102c70d4b05e-partition-cac94a070a81fd8f3931": [
+          "10.58.111.128"
+        ],
+        "compilation-c820eb56fef25ff1ea0a-partition-cac94a070a81fd8f3931": [
+          "10.58.111.129"
+        ],
+        "dynamic_for_static": [
+          "10.58.111.130",
+          "10.58.111.131",
+          "10.58.111.132",
+          "10.58.111.133",
+          "10.58.111.134",
+          "10.58.111.135",
+          "10.58.111.136"
+        ]
+      },
+      "prepared": true,
+      "stemcell": {
+        "infrastructure": "vsphere",
+        "hypervisor": "esxi",
+        "os": "ubuntu-trusty",
+        "version": "3146.6",
+        "file": "bosh-stemcell-3146.6-vsphere-esxi-ubuntu-trusty-go_agent.tgz",
+        "name": "bosh-vsphere-esxi-ubuntu-trusty-go_agent"
+      },
+      "jobs": [
+        {
+          "guid": "mysql-156c6e4c67f639dbe88c",
+          "installation_name": "mysql",
+          "properties": [
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "84d4314d03324482",
+                "password": "fakepassword"
+              },
+              "identifier": "vm_credentials"
+            },
+            {
+              "value": {
+                "identity": "root",
+                "password": "fakepassword"
+              },
+              "identifier": "mysql_admin_password"
+            },
+            {
+              "value": {
+                "identity": "f9fbb7aba93a59a52778",
+                "password": "fakepassword"
+              },
+              "identifier": "mysql_backup_server_credentials"
+            },
+            {
+              "value": 40,
+              "identifier": "max_user_connections"
+            }
+          ],
+          "instances": [
+            {
+              "value": 3,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 8192,
+              "identifier": "ram"
+            },
+            {
+              "value": 30000,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 100000,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 2,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "mysql-156c6e4c67f639dbe88c",
+              "installation_name": "mysql-partition-cac94a070a81fd8f3931",
+              "instance_count": 3,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "mysql"
+        },
+        {
+          "guid": "backup-prepare-f6776d5b5904433fd7c5",
+          "installation_name": "backup-prepare",
+          "properties": [
+            {
+              "value": {
+                "secret": "c7a7448309a996c7502a"
+              },
+              "identifier": "backup_encryption_key"
+            },
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "1bf87ffcbac62156",
+                "password": "fakepassword"
+              },
+              "identifier": "vm_credentials"
+            }
+          ],
+          "instances": [
+            {
+              "value": 0,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 1024,
+              "identifier": "ram"
+            },
+            {
+              "value": 200000,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 0,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 1,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "backup-prepare-f6776d5b5904433fd7c5",
+              "installation_name": "backup-prepare-partition-cac94a070a81fd8f3931",
+              "instance_count": 0,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "backup-prepare"
+        },
+        {
+          "guid": "proxy-bfdd805c8061af600ad2",
+          "installation_name": "proxy",
+          "properties": [
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "39548859ff302cca",
+                "password": "fakepassword"
+              },
+              "identifier": "vm_credentials"
+            },
+            {
+              "value": {
+                "identity": "admin",
+                "password": "fakepassword"
+              },
+              "identifier": "dashboard_credentials"
+            },
+            {
+              "identifier": "static_ips"
+            }
+          ],
+          "instances": [
+            {
+              "value": 2,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 1024,
+              "identifier": "ram"
+            },
+            {
+              "value": 10000,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 0,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 1,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "proxy-bfdd805c8061af600ad2",
+              "installation_name": "proxy-partition-cac94a070a81fd8f3931",
+              "instance_count": 2,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "proxy"
+        },
+        {
+          "guid": "cf-mysql-broker-2fa21b4427b214857930",
+          "installation_name": "cf-mysql-broker",
+          "properties": [
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "0f94236d09a1b759",
+                "password": "fakepassword"
+              },
+              "identifier": "vm_credentials"
+            },
+            {
+              "value": {
+                "identity": "ae1b78c2f1eb84c91661",
+                "password": "fakepassword"
+              },
+              "identifier": "broker_auth_credentials"
+            },
+            {
+              "value": "17d793e6-6da6-4f0e-b58d-364a407166a0",
+              "identifier": "plan_1_id"
+            },
+            {
+              "value": 100,
+              "identifier": "plan_1_max_storage_mb"
+            },
+            {
+              "value": "p-mysql",
+              "identifier": "broker_name"
+            },
+            {
+              "value": {
+                "secret": "ab84861aeb6e2e48a89e"
+              },
+              "identifier": "cookie_secret"
+            },
+            {
+              "value": {
+                "identity": "p-mysql",
+                "password": "fakepassword"
+              },
+              "identifier": "dashboard_client_credentials"
+            },
+            {
+              "identifier": "bind_hostname"
+            }
+          ],
+          "instances": [
+            {
+              "value": 2,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 1024,
+              "identifier": "ram"
+            },
+            {
+              "value": 10000,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 0,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 1,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "cf-mysql-broker-2fa21b4427b214857930",
+              "installation_name": "cf-mysql-broker-partition-cac94a070a81fd8f3931",
+              "instance_count": 2,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "cf-mysql-broker"
+        },
+        {
+          "guid": "broker-registrar-fe10fe7fb3d624fcc4ee",
+          "installation_name": "broker-registrar",
+          "properties": [
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "06844980385f192a",
+                "password": "fakepassword"
+              },
+              "identifier": "vm_credentials"
+            }
+          ],
+          "instances": [
+            {
+              "value": 1,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 2048,
+              "identifier": "ram"
+            },
+            {
+              "value": 2048,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 0,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 1,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "broker-registrar-fe10fe7fb3d624fcc4ee",
+              "installation_name": "broker-registrar",
+              "instance_count": 1,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "broker-registrar"
+        },
+        {
+          "guid": "broker-deregistrar-b0a1fa8986b16451c3a1",
+          "installation_name": "broker-deregistrar",
+          "properties": [
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "64cf92de1ee656a6",
+                "password": "fakepassword"
+              },
+              "identifier": "vm_credentials"
+            }
+          ],
+          "instances": [
+            {
+              "value": 1,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 2048,
+              "identifier": "ram"
+            },
+            {
+              "value": 2048,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 0,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 1,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "broker-deregistrar-b0a1fa8986b16451c3a1",
+              "installation_name": "broker-deregistrar",
+              "instance_count": 1,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "broker-deregistrar"
+        },
+        {
+          "guid": "acceptance-tests-832bbf4f102c70d4b05e",
+          "installation_name": "acceptance-tests",
+          "properties": [
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "d9b5e87e5a681fd3",
+                "password": "fakepassword"
+              },
+              "identifier": "vm_credentials"
+            }
+          ],
+          "instances": [
+            {
+              "value": 1,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 2048,
+              "identifier": "ram"
+            },
+            {
+              "value": 2048,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 0,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 1,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "acceptance-tests-832bbf4f102c70d4b05e",
+              "installation_name": "acceptance-tests",
+              "instance_count": 1,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "acceptance-tests"
+        },
+        {
+          "guid": "compilation-c820eb56fef25ff1ea0a",
+          "installation_name": "compilation",
+          "instances": [
+            {
+              "value": 1,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 4096,
+              "identifier": "ram"
+            },
+            {
+              "value": 20480,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 0,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 4,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "compilation-c820eb56fef25ff1ea0a",
+              "installation_name": "compilation-partition-cac94a070a81fd8f3931",
+              "instance_count": 1,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "compilation"
+        }
+      ],
+      "properties": [
+        {
+          "value": "disable",
+          "options": [
+            {
+              "identifier": "disable"
+            },
+            {
+              "properties": [
+                {
+                  "identifier": "bucket_name"
+                },
+                {
+                  "identifier": "bucket_path"
+                },
+                {
+                  "identifier": "access_key_id"
+                },
+                {
+                  "identifier": "secret_access_key"
+                },
+                {
+                  "identifier": "cron_schedule"
+                }
+              ],
+              "identifier": "enable"
+            }
+          ],
+          "identifier": "backups"
+        }
+      ],
+      "identifier": "p-mysql"
+    },
+    {
+      "guid": "aws-s3-cf-service-broker-4de99fdf6839920d7230",
+      "installation_name": "aws-s3-cf-service-broker-4de99fdf6839920d7230",
+      "product_version": "0.1.61",
+      "singleton_availability_zone_reference": "cac94a070a81fd8f3931",
+      "network_reference": "4fd3d742337fdc132edb",
+      "availability_zone_references": [
+        "cac94a070a81fd8f3931"
+      ],
+      "ips": {
+        "broker-deploy-94ae06e1eefcbac05507-partition-cac94a070a81fd8f3931": [
+          "10.58.111.137"
+        ],
+        "compilation-b8b50de77b6f1850c5e8-partition-cac94a070a81fd8f3931": [
+          "10.58.111.138",
+          "10.58.111.139",
+          "10.58.111.140",
+          "10.58.111.141"
+        ],
+        "broker-registrar-569f0213c53880478bc7-partition-cac94a070a81fd8f3931": [
+          "10.58.111.142"
+        ],
+        "broker-deregistrar-11b3a5f82dd83854f444-partition-cac94a070a81fd8f3931": [
+          "10.58.111.143"
+        ],
+        "dynamic_for_static": []
+      },
+      "prepared": true,
+      "stemcell": {
+        "infrastructure": "vsphere",
+        "hypervisor": "esxi",
+        "os": "ubuntu-trusty",
+        "version": "3146.5",
+        "file": "bosh-stemcell-3146.5-vsphere-esxi-ubuntu-trusty-go_agent.tgz",
+        "name": "bosh-vsphere-esxi-ubuntu-trusty-go_agent"
+      },
+      "jobs": [
+        {
+          "guid": "broker-deploy-94ae06e1eefcbac05507",
+          "installation_name": "broker-deploy",
+          "properties": [
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "c46e1259a628d3ac",
+                "password": "fakepassword"
+              },
+              "identifier": "vm_credentials"
+            }
+          ],
+          "instances": [
+            {
+              "value": 1,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 512,
+              "identifier": "ram"
+            },
+            {
+              "value": 1024,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 0,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 1,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "broker-deploy-94ae06e1eefcbac05507",
+              "installation_name": "broker-deploy",
+              "instance_count": 1,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "broker-deploy"
+        },
+        {
+          "guid": "compilation-b8b50de77b6f1850c5e8",
+          "installation_name": "compilation",
+          "instances": [
+            {
+              "value": 4,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 2048,
+              "identifier": "ram"
+            },
+            {
+              "value": 10240,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 0,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 2,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "compilation-b8b50de77b6f1850c5e8",
+              "installation_name": "compilation-partition-cac94a070a81fd8f3931",
+              "instance_count": 4,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "compilation"
+        },
+        {
+          "guid": "broker-registrar-569f0213c53880478bc7",
+          "installation_name": "broker-registrar",
+          "properties": [
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "1ddad4c1b395ae32",
+                "password": "fakepassword"
+              },
+              "identifier": "vm_credentials"
+            }
+          ],
+          "instances": [
+            {
+              "value": 1,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 512,
+              "identifier": "ram"
+            },
+            {
+              "value": 1024,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 0,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 1,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "broker-registrar-569f0213c53880478bc7",
+              "installation_name": "broker-registrar",
+              "instance_count": 1,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "broker-registrar"
+        },
+        {
+          "guid": "broker-deregistrar-11b3a5f82dd83854f444",
+          "installation_name": "broker-deregistrar",
+          "properties": [
+            {
+              "value": {
+                "identity": "vcap",
+                "salt": "37abc1421cb5f2b6",
+                "password": "fakepassword"
+              },
+              "identifier": "vm_credentials"
+            }
+          ],
+          "instances": [
+            {
+              "value": 1,
+              "identifier": "instances"
+            }
+          ],
+          "resources": [
+            {
+              "value": 512,
+              "identifier": "ram"
+            },
+            {
+              "value": 1024,
+              "identifier": "ephemeral_disk"
+            },
+            {
+              "value": 0,
+              "identifier": "persistent_disk"
+            },
+            {
+              "value": 1,
+              "identifier": "cpu"
+            }
+          ],
+          "partitions": [
+            {
+              "job_reference": "broker-deregistrar-11b3a5f82dd83854f444",
+              "installation_name": "broker-deregistrar",
+              "instance_count": 1,
+              "availability_zone_reference": "cac94a070a81fd8f3931"
+            }
+          ],
+          "identifier": "broker-deregistrar"
+        }
+      ],
+      "properties": [
+        {
+          "value": "AKIAIWSX3F3APIOVNJ7A",
+          "identifier": "aws_access_key"
+        },
+        {
+          "value": "al3B+ovewfQo8OcTw2N8MSUjUR/Efmq9OE7BwlUb",
+          "identifier": "aws_secret_key"
+        },
+        {
+          "value": "89b49244-b867-4575-ab2a-84cb9d2fd259",
+          "identifier": "service_uuid"
+        },
+        {
+          "value": "85c880f7-b7c2-45b6-90d2-dd6c4738f2b9",
+          "identifier": "service_plan_uuid"
+        },
+        {
+          "value": {
+            "secret": "d2117e8ff6bde69e9539"
+          },
+          "identifier": "security_user_password"
+        }
+      ],
+      "identifier": "aws-s3-cf-service-broker"
+    }
+  ]
+}

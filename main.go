@@ -70,7 +70,9 @@ func main() {
 			fmt.Println(err)
 			os.Exit(1)
 		}
-
+		products.DetermineMarketplaceMappings(catalogs)
+	}()
+	go func() {
 		catalog := pivnet.NewPivNet(os.Getenv("PIVOTAL_NETWORK_TOKEN"), "https://network.pivotal.io/api/v2")
 		catalogs[catalog.Slug()] = catalog
 

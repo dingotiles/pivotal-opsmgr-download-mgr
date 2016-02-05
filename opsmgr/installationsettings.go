@@ -102,7 +102,7 @@ type SecurityProperty struct {
 
 // GetInstallationSettings gets the installation settings from target OpsMgr
 // Currently limited to v1.6 API
-func (opsmgr OpsMgr) GetInstallationSettings() (settings *InstallationSettingsVersion16, err error) {
+func (opsmgr *OpsMgr) GetInstallationSettings() (settings *InstallationSettingsVersion16, err error) {
 	req, err := http.NewRequest("GET", opsmgr.apiURL("/api/installation_settings"), nil)
 	if err != nil {
 		return

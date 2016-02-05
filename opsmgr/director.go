@@ -14,7 +14,7 @@ type Director struct {
 }
 
 // GetDirector discovers the connection credentials to OpsMgr Director
-func (opsmgr OpsMgr) GetDirector() (director *Director, err error) {
+func (opsmgr *OpsMgr) GetDirector() (director *Director, err error) {
 	settings, err := opsmgr.GetInstallationSettings()
 	if err != nil {
 		return

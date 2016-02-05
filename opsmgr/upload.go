@@ -12,16 +12,16 @@ import (
 )
 
 // UploadProductFile uploads a .pivotal file to your OpsMgr
-func (opsmgr OpsMgr) UploadProductFile(tile *marketplaces.ProductTile, downloadResponse *http.Response) (err error) {
+func (opsmgr *OpsMgr) UploadProductFile(tile *marketplaces.ProductTile, downloadResponse *http.Response) (err error) {
 	return opsmgr.uploadFile("product", tile.ProductFileName, downloadResponse)
 }
 
 // UploadProductStemcell uploads a stemcell to your OpsMgr
-func (opsmgr OpsMgr) UploadProductStemcell(stemcell *marketplaces.ProductStemcell, downloadResponse *http.Response) (err error) {
+func (opsmgr *OpsMgr) UploadProductStemcell(stemcell *marketplaces.ProductStemcell, downloadResponse *http.Response) (err error) {
 	return opsmgr.uploadFile("stemcell", stemcell.ProductFileName, downloadResponse)
 }
 
-func (opsmgr OpsMgr) uploadFile(uploadEndpoint string, fileName string, downloadResponse *http.Response) (err error) {
+func (opsmgr *OpsMgr) uploadFile(uploadEndpoint string, fileName string, downloadResponse *http.Response) (err error) {
 	readPipe, writePipe := io.Pipe()
 	writer := multipart.NewWriter(writePipe)
 

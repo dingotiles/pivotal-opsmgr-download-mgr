@@ -14,7 +14,7 @@ import (
 var products *opsmgr.Products
 var catalogs marketplaces.Marketplaces
 
-func downloadAndUploadTile(opsmgrAPI opsmgr.OpsMgr, catalog marketplaces.Marketplace, tile *marketplaces.ProductTile) {
+func downloadAndUploadTile(opsmgrAPI *opsmgr.OpsMgr, catalog marketplaces.Marketplace, tile *marketplaces.ProductTile) {
 	fmt.Printf("starting download...\n")
 	downloadResponse, err := catalog.DownloadProductTileFile(tile)
 	if err != nil {
@@ -40,7 +40,7 @@ func downloadAndUploadTile(opsmgrAPI opsmgr.OpsMgr, catalog marketplaces.Marketp
 	}
 }
 
-func downloadAndUploadStemcell(opsmgrAPI opsmgr.OpsMgr, catalog marketplaces.Marketplace, stemcell *marketplaces.ProductStemcell) {
+func downloadAndUploadStemcell(opsmgrAPI *opsmgr.OpsMgr, catalog marketplaces.Marketplace, stemcell *marketplaces.ProductStemcell) {
 	fmt.Printf("starting stemcell download...\n")
 	downloadResponse, err := catalog.DownloadProductStemcellFile(stemcell)
 	if err != nil {

@@ -13,7 +13,7 @@ import (
 type Products map[string]*Product
 
 // GetProducts gets the current product/versions that have been uploaded to OpsMgr
-func (opsmgr OpsMgr) GetProducts() (products *Products, err error) {
+func (opsmgr *OpsMgr) GetProducts() (products *Products, err error) {
 	req, err := http.NewRequest("GET", opsmgr.apiURL("/api/products"), nil)
 	if err != nil {
 		return

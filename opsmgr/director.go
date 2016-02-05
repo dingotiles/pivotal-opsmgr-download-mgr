@@ -15,12 +15,14 @@ type Director struct {
 
 // GetDirector discovers the connection credentials to OpsMgr Director
 func (opsmgr *OpsMgr) GetDirector() (director *Director, err error) {
-	settings, err := opsmgr.GetInstallationSettings()
-	if err != nil {
-		return
+	if opsmgr.InstallationSettings == nil {
+		err = opsmgr.GetInstallationSettings()
+		if err != nil {
+			return
+		}
 	}
 
-	for _, product := range settings.Products {
+	for _, product := range opsmgr.InstallationSettings.Products {
 		if strings.HasPrefix(product.InstallationName, "p-bosh") {
 			director = &Director{}
 

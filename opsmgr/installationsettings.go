@@ -102,7 +102,7 @@ type SecurityProperty struct {
 
 // GetInstallationSettings gets the installation settings from target OpsMgr
 // Currently limited to v1.6 API
-func (opsmgr *OpsMgr) GetInstallationSettings() (settings *InstallationSettingsVersion16, err error) {
+func (opsmgr *OpsMgr) GetInstallationSettings() (err error) {
 	req, err := http.NewRequest("GET", opsmgr.apiURL("/api/installation_settings"), nil)
 	if err != nil {
 		return
@@ -115,7 +115,7 @@ func (opsmgr *OpsMgr) GetInstallationSettings() (settings *InstallationSettingsV
 	}
 	defer resp.Body.Close()
 
-	settings = &InstallationSettingsVersion16{}
-	err = json.NewDecoder(resp.Body).Decode(settings)
+	opsmgr.InstallationSettings = &InstallationSettingsVersion16{}
+	err = json.NewDecoder(resp.Body).Decode(opsmgr.InstallationSettings)
 	return
 }

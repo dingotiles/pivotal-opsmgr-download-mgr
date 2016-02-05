@@ -10,6 +10,7 @@ import (
 	"github.com/dingodb/pivotal-opsmgr-download-mgr/opsmgr"
 	"github.com/dingodb/pivotal-opsmgr-download-mgr/pivnet"
 	"github.com/go-martini/martini"
+	"github.com/hashicorp/go-version"
 )
 
 var products *opsmgr.Products
@@ -46,11 +47,35 @@ func downloadAndUploadStemcell(opsmgrAPI *opsmgr.OpsMgr, catalog marketplaces.Ma
 	fmt.Printf("starting stemcell download...\n")
 	downloadResponse, err := catalog.DownloadProductStemcellFile(stemcell)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
+		return
 	}
 	err = opsmgrAPI.UploadProductStemcell(stemcell, downloadResponse)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
+		return
+	}
+}
+
+func uploadNewStemcells(stemcells marketplaces.ProductStemcells) {
+	latestStemcellVersionUploaded, _ := version.NewVersion("0.0.0")
+	for _, productStemcell := range stemcells {
+		stemcellVersion, err := version.NewVersion(productStemcell.Version)
+		if err != nil {
+			fmt.Println("Couldn't parse stemcell version into semver", productStemcell)
+			continue
+		}
+		if productStemcell.Uploaded && latestStemcellVersionUploaded.LessThan(stemcellVersion) {
+			latestStemcellVersionUploaded = stemcellVersion
+		}
+	}
+
+	// Upload any product stemcell that is newer
+	for _, productStemcell := range stemcells {
+		stemcellVersion, _ := version.NewVersion(productStemcell.Version)
+		if latestStemcellVersionUploaded.LessThan(stemcellVersion) {
+			fmt.Println("Uploading stemcell", productStemcell)
+		}
 	}
 }
 
@@ -96,6 +121,7 @@ func main() {
 		}
 
 		catalog.DetermineStemcellsUploaded(directorStemcells)
+		uploadNewStemcells(catalog.ProductStemcells())
 
 		loadingCatalogs = false
 	}()

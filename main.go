@@ -92,9 +92,9 @@ func main() {
 				os.Exit(1)
 			}
 			fmt.Println(catalog.Name(), catalog.ProductTiles())
+			products.DetermineMarketplaceMappings(catalogs)
 		}
 
-		products.DetermineMarketplaceMappings(catalogs)
 		catalog.DetermineStemcellsUploaded(directorStemcells)
 
 		loadingCatalogs = false

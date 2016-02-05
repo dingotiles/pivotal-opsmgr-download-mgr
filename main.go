@@ -108,6 +108,14 @@ func main() {
 			})
 		}
 	})
+	m.Get("/director", func(r render.Render) {
+		director, err := opsmgrAPI.GetDirector()
+
+		r.HTML(200, "director", struct {
+			Director *opsmgr.Director
+			Error    error
+		}{director, err})
+	})
 
 	m.Get("/install/:marketplace/tile/:tilename", func(params martini.Params, r render.Render) {
 		marketplaceSlug := params["marketplace"]

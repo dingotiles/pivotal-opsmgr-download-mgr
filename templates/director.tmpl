@@ -1,0 +1,11 @@
+<h2>Director</h2>
+{{if .Error}}{{.Error}}{{end}}
+
+{{if .Director}}
+<p>{{.Director}}</p>
+
+<pre>
+bosh target {{.Director.URL}} opsmgr
+bosh login {{.Director.Username}} {{.Director.Password}}
+</pre>
+{{end}}

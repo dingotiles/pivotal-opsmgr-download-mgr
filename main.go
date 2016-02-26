@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/cloudfoundry-community/gogobosh/models"
 	"github.com/codegangsta/martini-contrib/render"
@@ -16,6 +17,8 @@ import (
 var products *opsmgr.Products
 var directorStemcells models.Stemcells
 var catalogs marketplaces.Marketplaces
+var opsmgrAPI *opsmgr.OpsMgr
+var loadingCatalogs bool
 
 func downloadAndUploadTile(opsmgrAPI *opsmgr.OpsMgr, catalog marketplaces.Marketplace, tile *marketplaces.ProductTile) {
 	fmt.Printf("starting download...\n")
@@ -83,51 +86,63 @@ func uploadNewStemcells(opsmgrAPI *opsmgr.OpsMgr, catalog marketplaces.Marketpla
 	}
 }
 
-func main() {
-	opsmgrAPI := opsmgr.NewOpsMgr()
-	catalogs = marketplaces.NewMarketplaces()
-	loadingCatalogs := true
+func refreshOpsMgr() {
+	fmt.Printf("Fetching uploaded products from OpsMgr %s...\n", opsmgrAPI.URL)
+	var err error
+	products, err = opsmgrAPI.GetProducts()
 
-	go func() {
-		fmt.Printf("Fetching uploaded products from OpsMgr %s...\n", opsmgrAPI.URL)
-		var err error
-		products, err = opsmgrAPI.GetProducts()
+	// Errors:
+	// - no VPN or bad URL - "Get https://10.58.111.65/api/products: dial tcp 10.58.111.65:443: i/o timeout"
+	// - bad connection - "Get https://10.58.111.65/api/products: net/http: TLS handshake timeout"
+	// - need to skip SSL validation - "Get https://10.58.111.65/api/products: x509: cannot validate certificate for 10.58.111.65 because it doesn't contain any IP SANs"
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 
-		// Errors:
-		// - no VPN or bad URL - "Get https://10.58.111.65/api/products: dial tcp 10.58.111.65:443: i/o timeout"
-		// - bad connection - "Get https://10.58.111.65/api/products: net/http: TLS handshake timeout"
-		// - need to skip SSL validation - "Get https://10.58.111.65/api/products: x509: cannot validate certificate for 10.58.111.65 because it doesn't contain any IP SANs"
+	directorStemcells, err = opsmgrAPI.GetStemcells()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	products.DetermineMarketplaceMappings(catalogs)
+}
+
+func refreshMarketplaceCatalogs() {
+	catalog := pivnet.NewPivNet(os.Getenv("PIVOTAL_NETWORK_TOKEN"), "https://network.pivotal.io/api/v2")
+	catalogs[catalog.Slug()] = catalog
+
+	for _, catalog := range catalogs {
+		fmt.Printf("Fetching available product tiles & stemcells from %s...\n", catalog.Name())
+		err := catalog.UpdateProductCatalog()
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}
-
-		directorStemcells, err = opsmgrAPI.GetStemcells()
-		if err != nil {
-			fmt.Println(err)
-		}
-
+		fmt.Println(catalog.Name(), catalog.ProductTiles())
 		products.DetermineMarketplaceMappings(catalogs)
+	}
+
+	catalog.DetermineStemcellsUploaded(directorStemcells)
+	uploadNewStemcells(opsmgrAPI, catalog, catalog.ProductStemcells())
+
+	loadingCatalogs = false
+}
+
+func main() {
+	opsmgrAPI = opsmgr.NewOpsMgr()
+	catalogs = marketplaces.NewMarketplaces()
+	loadingCatalogs = true
+
+	refreshRate := 5 * time.Second
+
+	go func() {
+		refreshOpsMgr()
+		time.Sleep(refreshRate)
 	}()
 	go func() {
-		catalog := pivnet.NewPivNet(os.Getenv("PIVOTAL_NETWORK_TOKEN"), "https://network.pivotal.io/api/v2")
-		catalogs[catalog.Slug()] = catalog
-
-		for _, catalog := range catalogs {
-			fmt.Printf("Fetching available product tiles & stemcells from %s...\n", catalog.Name())
-			err := catalog.UpdateProductCatalog()
-			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
-			}
-			fmt.Println(catalog.Name(), catalog.ProductTiles())
-			products.DetermineMarketplaceMappings(catalogs)
-		}
-
-		catalog.DetermineStemcellsUploaded(directorStemcells)
-		uploadNewStemcells(opsmgrAPI, catalog, catalog.ProductStemcells())
-
-		loadingCatalogs = false
+		refreshMarketplaceCatalogs()
+		time.Sleep(refreshRate)
 	}()
 
 	m := martini.Classic()
